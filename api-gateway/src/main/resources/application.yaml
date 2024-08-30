@@ -11,6 +11,13 @@ spring:
           filters:
             - RewritePath=/api/review/(?<segment>.*), /review/${segment}
 
+        - id: MENU-SERVICE
+          uri: lb://MENU-SERVICE
+          predicates:
+            - Path=/api/menu/**
+          filters:
+            - RewritePath=/api/menu/(?<segment>.*), /menu/${segment}
+
         - id: BOOKING-SERVICE
           uri: lb://BOOKING-SERVICE
           predicates:

@@ -1,4 +1,4 @@
-package com.devx.menu_service;
+package com.devx.menu_service.controller;
 
 import com.devx.menu_service.model.MenuItem;
 import com.devx.menu_service.service.MenuService;
