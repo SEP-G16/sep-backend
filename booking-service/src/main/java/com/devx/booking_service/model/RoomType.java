@@ -20,6 +20,7 @@ public class RoomType {
 
     private String type;
 
+    @ElementCollection
     private List<String> keywords;
     private int floorArea;
     private int maximumOccupancy;
