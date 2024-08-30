@@ -21,21 +21,6 @@ spec:
         ports:
         - containerPort: 8084
         env:
-        - name: SPRING_DATASOURCE_URL
-          valueFrom:
-            configMapKeyRef:
-              name: hrmis-config-map
-              key: MENU_SERVICE_DATASOURCE_URL
-        - name: SPRING_DATASOURCE_USERNAME
-          valueFrom:
-            secretKeyRef:
-              name: database-creds
-              key: username
-        - name: SPRING_DATASOURCE_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: database-creds
-              key: password
         - name: SPRING_APPLICATION_NAME
           valueFrom:
             configMapKeyRef:
