@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: ${SPRING_APPLICATION_NAME}
+  cloud:
+    gateway:
+      routes:
+        - id: REVIEW-SERVICE
+          uri: lb://REVIEW-SERVICE
+          predicates:
+            - Path=/api/review/**
+          filters:
+            - RewritePath=/api/review/(?<segment>.*), /review/${segment}
+
+        - id: BOOKING-SERVICE
+          uri: lb://BOOKING-SERVICE
+          predicates:
+            - Path=/api/booking/**, /api/room-type/**, /api/room/**
+          filters:
+            - RewritePath=/api/booking/(?<segment>.*), /booking/${segment}
+            - RewritePath=/api/room-type/(?<segment>.*), /room-type/${segment}
+            - RewritePath=/api/room/(?<segment>.*), /room/${segment}
+  config:
+    import: "${SPRING_CONFIG_IMPORT}"
+
+
+

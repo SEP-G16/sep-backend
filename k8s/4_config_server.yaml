@@ -1,0 +1,76 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: config-server
+  labels:
+    app: config-server
+spec:
+  clusterIP: None
+  ports:
+    - port: 8888
+      name: config-server
+  selector:
+    app: config-server
+
+---
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: config-server
+spec:
+  serviceName: "config-server"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: config-server
+  template:
+    metadata:
+      labels:
+        app: config-server
+    spec:
+      containers:
+        - name: config-server
+          image: venuraks/sep-16-config-server:0.0.1
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8888
+          env:
+          - name: GIT_USER
+            valueFrom:
+              configMapKeyRef:
+                name: hrmis-config-map
+                key: CONFIG_SERVER_GIT_USER
+          - name: GIT_REPO
+            valueFrom:
+              configMapKeyRef:
+                name: hrmis-config-map
+                key: CONFIG_SERVER_GIT_REPO
+          - name: GIT_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: github-creds
+                key: username
+          - name: GIT_ACCESS_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: github-creds
+                key: password
+
+
+                     
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: config-server-lb
+  labels:
+    app: config-server
+spec:
+  selector:
+    app: config-server
+  type: NodePort
+  ports:
+    - port: 80
+      targetPort: 8888
