@@ -1,0 +1,151 @@
+# This workflow will build a Java project with Maven, and cache/restore any dependencies to improve the workflow execution time
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-maven
+
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+name: SpringBoot CI/CD Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  # To manually execute yaml file
+  workflow_dispatch:
+
+env:
+  PROJECT_ID: ${{ secrets.GKE_PROJECT_ID }}
+  GKE_CLUSTER: hrmis-cluster-1
+  GKE_ZONE: us-central1-c
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Login to DockerHub Registry
+      run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+    
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: maven
+      
+    - name: Package Config Server
+      run: mvn package -DskipTests --file config-server/pom.xml
+    
+    - name: Build Config Server Docker Image
+      run: docker build -t ${{ secrets.DOCKER_USERNAME }}/sep-16-config-server:0.0.1 config-server/
+
+    - name: Push Config Server Docker Image
+      run: docker push ${{ secrets.DOCKER_USERNAME }}/sep-16-config-server:0.0.1
+
+# ---------------------------------------------------------------------------------------------------------
+
+    - name: Package Eureka Server
+      run: mvn package -DskipTests --file eureka-server/pom.xml
+    
+    - name: Build Eureka Server Docker Image
+      run: docker build -t ${{ secrets.DOCKER_USERNAME }}/sep-16-eureka-server:0.0.1 eureka-server/
+
+    - name: Push Eureka Server Docker Image
+      run: docker push ${{ secrets.DOCKER_USERNAME }}/sep-16-eureka-server:0.0.1
+
+# ---------------------------------------------------------------------------------------------------------
+
+    - name: Package Review Service
+      run: mvn package -DskipTests --file review-service/pom.xml
+    
+    - name: Build Review Service Docker Image
+      run: docker build -t ${{ secrets.DOCKER_USERNAME }}/sep-16-review-service:0.0.1 review-service/
+
+    - name: Push Review Service Docker Image
+      run: docker push ${{ secrets.DOCKER_USERNAME }}/sep-16-review-service:0.0.1
+
+# ---------------------------------------------------------------------------------------------------------
+
+    - name: Package Booking Service
+      run: mvn package -DskipTests --file booking-service/pom.xml
+    
+    - name: Build Booking Service Docker Image
+      run: docker build -t ${{ secrets.DOCKER_USERNAME }}/sep-16-booking-service:0.0.1 booking-service/
+
+    - name: Push Booking Service Docker Image
+      run: docker push ${{ secrets.DOCKER_USERNAME }}/sep-16-booking-service:0.0.1
+
+# ---------------------------------------------------------------------------------------------------------
+
+    - name: Package Staff Service
+      run: mvn package -DskipTests --file staff-service/pom.xml
+    
+    - name: Build Staff Service Docker Image
+      run: docker build -t ${{ secrets.DOCKER_USERNAME }}/sep-16-staff-service:0.0.1 staff-service/
+
+    - name: Push Staff Service Docker Image
+      run: docker push ${{ secrets.DOCKER_USERNAME }}/sep-16-staff-service:0.0.1
+
+# ---------------------------------------------------------------------------------------------------------
+
+    - name: Package Menu Service
+      run: mvn package -DskipTests --file menu-service/pom.xml
+    
+    - name: Build Menu Service Docker Image
+      run: docker build -t ${{ secrets.DOCKER_USERNAME }}/sep-16-menu-service:0.0.1 menu-service/
+
+    - name: Push Menu Service Docker Image
+      run: docker push ${{ secrets.DOCKER_USERNAME }}/sep-16-menu-service:0.0.1
+
+# ---------------------------------------------------------------------------------------------------------
+
+    - name: Package Order Service
+      run: mvn package -DskipTests --file order-service/pom.xml
+    
+    - name: Build Order Service Docker Image
+      run: docker build -t ${{ secrets.DOCKER_USERNAME }}/sep-16-order-service:0.0.1 order-service/
+
+    - name: Push Order Service Docker Image
+      run: docker push ${{ secrets.DOCKER_USERNAME }}/sep-16-order-service:0.0.1
+
+# ---------------------------------------------------------------------------------------------------------
+
+    - name: Package Table Reservations Service
+      run: mvn package -DskipTests --file table-reservation-service/pom.xml
+    
+    - name: Build Table Reservations Service Docker Image
+      run: docker build -t ${{ secrets.DOCKER_USERNAME }}/sep-16-table-reservation-service:0.0.1 table-reservation-service/
+
+    - name: Push Table Reservations Service Docker Image
+      run: docker push ${{ secrets.DOCKER_USERNAME }}/sep-16-table-reservation-service:0.0.1
+
+# ---------------------------------------------------------------------------------------------------------
+
+    - name: Package API Gateway
+      run: mvn package -DskipTests --file api-gateway/pom.xml
+    
+    - name: Build API Gateway Docker Image
+      run: docker build -t ${{ secrets.DOCKER_USERNAME }}/sep-16-api-gateway:0.0.1 api-gateway/
+
+    - name: Push API Gateway Docker Image
+      run: docker push ${{ secrets.DOCKER_USERNAME }}/sep-16-api-gateway:0.0.1
+  
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: kubectl - GKE Cluster
+      uses: ameydev/gke-kubectl-action@master
+      env:
+        PROJECT_ID: ${{ env.PROJECT_ID }}
+        APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_SA_KEY }}
+        CLUSTER_NAME: ${{ env.GKE_CLUSTER }}
+        ZONE_NAME: ${{ env.GKE_ZONE }}
+      with:
+        args: apply -f k8s/
