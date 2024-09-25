@@ -22,7 +22,7 @@ public class MenuItem {
     private String shortDescription;
     private String longDescription;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.MERGE)
     private Category category;
 
     private double price;
@@ -30,7 +30,7 @@ public class MenuItem {
     @ElementCollection
     private List<String> ingredients;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "menu_item_add_ons",
             joinColumns = @JoinColumn(name = "menu_item_id"),
@@ -46,18 +46,4 @@ public class MenuItem {
 
     @Enumerated(EnumType.ORDINAL)
     private MenuItemStatus status;
-
-    public boolean hasNullAttributes() {
-        return id == null ||
-                name == null ||
-                shortDescription == null ||
-                longDescription == null ||
-                category == null ||
-                ingredients == null ||
-                addOns == null ||
-                imageUrl == null ||
-                cuisine == null ||
-                tags == null ||
-                status == null;
-    }
 }

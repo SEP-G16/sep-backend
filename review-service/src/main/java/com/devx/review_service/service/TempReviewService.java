@@ -49,7 +49,7 @@ public class TempReviewService {
         }
     }
 
-    public ResponseEntity<Void> removeTempReview(Long id){
+    public ResponseEntity<Mono<Void>> removeTempReview(Long id){
         try {
             Optional<TempReview> tempReviewsById = tempReviewRepository.findById(id);
             if(tempReviewsById.isPresent())

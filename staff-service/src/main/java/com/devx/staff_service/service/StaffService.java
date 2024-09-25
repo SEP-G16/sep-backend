@@ -27,11 +27,13 @@ public class StaffService {
         this.jdbcScheduler = jdbcScheduler;
     }
 
+    private Staff insertStaffMember(Staff staff) {
+        return staffRepository.save(staff);
+    }
+
     public ResponseEntity<Mono<Staff>> addStaff(Staff staff) {
         try {
-            Mono<Staff> mono = Mono.fromCallable(() -> staffRepository.save(staff))
-                    .subscribeOn(jdbcScheduler);
-
+            Mono<Staff> mono = Mono.fromCallable(() -> insertStaffMember(staff)).subscribeOn(jdbcScheduler);
             return new ResponseEntity<>(mono, HttpStatus.CREATED);
         } catch (Exception e) {
             LOG.error("An unexpected error occurred while adding staff", e);
@@ -42,23 +44,7 @@ public class StaffService {
     public ResponseEntity<Mono<Staff>> updateStaff(Long id, Staff updatedStaff) {
         try {
             Mono<Staff> mono = Mono.fromCallable(() -> {
-                // Fetch existing staff
-                Staff existingStaff = staffRepository.findById(id)
-                        .orElseThrow(() -> new RuntimeException("Staff not found with id: " + id));
-
-                // Update only provided fields
-                if (updatedStaff.getEmail() != null) {
-                    existingStaff.setEmail(updatedStaff.getEmail());
-                }
-                if (updatedStaff.getPhoneNumber() != null) {
-                    existingStaff.setPhoneNumber(updatedStaff.getPhoneNumber());
-                }
-                if (updatedStaff.getAddress() != null) {
-                    existingStaff.setAddress(updatedStaff.getAddress());
-                }
-
-                // Save updated staff
-                return staffRepository.save(existingStaff);
+                return staffRepository.updateOrInsert(updatedStaff);
             }).subscribeOn(jdbcScheduler);
 
             return new ResponseEntity<>(mono, HttpStatus.OK);

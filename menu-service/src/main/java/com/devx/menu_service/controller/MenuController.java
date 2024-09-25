@@ -1,5 +1,6 @@
 package com.devx.menu_service.controller;
 
+import com.devx.menu_service.dto.request.AddMenuItemRequestBody;
 import com.devx.menu_service.model.MenuItem;
 import com.devx.menu_service.service.MenuService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,7 @@ public class MenuController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Mono<MenuItem>> add(@RequestBody MenuItem menuItem) {
-        return menuService.addMenuItem(menuItem);
+    public ResponseEntity<Mono<MenuItem>> add(@RequestBody AddMenuItemRequestBody addMenuItemRequestBody) {
+        return menuService.addMenuItem(addMenuItemRequestBody);
     }
 }

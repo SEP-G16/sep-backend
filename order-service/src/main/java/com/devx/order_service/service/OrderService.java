@@ -54,4 +54,30 @@ public class OrderService {
         }
     }
 
+    public ResponseEntity<Mono<Void>> cancelOrder(Long orderId) {
+        try {
+            orderRepository.deleteById(orderId);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (Exception e) {
+            LOG.error("An unexpected error occurred while deleting review");
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public ResponseEntity<Mono<Order>> rejectOrderItem(Long orderId, Long orderItemId) {
+        try {
+            Optional<Order> order = orderRepository.findById(orderId);
+            if (order.isPresent()) {
+                Order orderObj = order.get();
+                orderObj.getOrderItems().removeIf(orderItem -> orderItem.getId().equals(orderItemId));
+                Mono<Order> saved = Mono.fromCallable(() -> orderRepository.save(orderObj)).subscribeOn(jdbcScheduler);
+                return new ResponseEntity<>(saved, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception e) {
+            LOG.error("An unexpected error occurred while saving review");
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }
