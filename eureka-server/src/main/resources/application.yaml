@@ -2,4 +2,26 @@ spring:
   application:
     name: ${SPRING_APPLICATION_NAME}
   config:
-    import: "${SPRING_CONFIG_IMPORT}"
+    import: "optional:${SPRING_CONFIG_IMPORT}"
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: dev
+    import: "optional:configserver:http://localhost:8067/"
+  application:
+    name: eureka-server
+
+server:
+  port: 8761
+
+eureka:
+  client:
+    fetchRegistry: false
+    registerWithEureka: false
+    serviceUrl:
+      defaultZone: "http://localhost:8761/eureka/"
+
+---
