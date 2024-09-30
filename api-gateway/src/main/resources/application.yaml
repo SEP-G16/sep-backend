@@ -27,7 +27,31 @@ spring:
             - RewritePath=/api/room-type/(?<segment>.*), /room-type/${segment}
             - RewritePath=/api/room/(?<segment>.*), /room/${segment}
   config:
-    import: "${SPRING_CONFIG_IMPORT}"
+    import: "optional:${SPRING_CONFIG_IMPORT}"
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: dev
+    import: "optional:configserver:http://localhost:8067/"
+  application:
+    name: api-gateway
+
+server:
+  port: 8060
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: "http://localhost:8761/eureka/"
+    initialInstanceInfoReplicationIntervalSeconds: 5
+    registryFetchIntervalSeconds: 5
+  instance:
+    preferIpAddress: true
+    leaseRenewalIntervalInSeconds: 5
+    leaseExpirationDurationInSeconds: 5
 
 
-
+---

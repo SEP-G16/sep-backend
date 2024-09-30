@@ -36,4 +36,9 @@ public class TempReviewController {
     public ResponseEntity<Mono<Void>> deleteTempReview(@RequestBody Long id){
         return tempReviewService.removeTempReview(id);
     }
+
+    @GetMapping("/hello")
+    public String hello() {
+        return "Hello from TempReviewController! Nice to see you!";
+    }
 }
