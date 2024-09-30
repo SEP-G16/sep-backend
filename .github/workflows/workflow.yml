@@ -148,4 +148,4 @@ jobs:
         CLUSTER_NAME: ${{ env.GKE_CLUSTER }}
         ZONE_NAME: ${{ env.GKE_ZONE }}
       with:
-        args: apply -f k8s/
+        args: delete pods --all && kubectl apply -f k8s/ 
