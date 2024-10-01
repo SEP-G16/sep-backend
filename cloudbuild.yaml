@@ -3,7 +3,7 @@ steps:
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 - name: 'gcr.io/cloud-builders/mvn'
-  args: ['mvn package -DskipTests --file config-server/pom.xml']
+  args: ['mvn package -DskipTests --file ./config-server/pom.xml']
   id: 'Package Config Server'
 
 - name: 'gcr.io/cloud-builders/docker'
