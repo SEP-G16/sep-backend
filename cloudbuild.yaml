@@ -4,7 +4,7 @@ steps:
 
 - name: 'gcr.io/cloud-builders/mvn'
   dir: 'config-server'
-  args: ['mvn', 'package', '-DskipTests']
+  args: ['package', '-DskipTests']
   id: 'Package Config Server'
 
 - name: 'gcr.io/cloud-builders/docker'
