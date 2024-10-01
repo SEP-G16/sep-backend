@@ -6,6 +6,7 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -21,7 +22,7 @@ public class TempBooking {
 
     @CreationTimestamp
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
 
     private String customerName;
     private String customerNic;
