@@ -1,0 +1,148 @@
+env:
+  GAR_ZONE: us-central1
+  PROJECT_ID: sound-bee-428509-q1
+  GAR_REPO: hrmis-artifact-registry
+
+steps:
+
+# ----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+- name: 'gcr.io/cloud-builders/mvn'
+  args: ['mvn package -DskipTests --file ./config-server/pom.xml']
+  id: 'Package Config Server'
+
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', '${{ env.GAR_ZONE }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_REPO }}/config-server', './config-server' ]
+  id: 'Build Config Server Docker Image'
+
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', '${{ env.GAR_ZONE }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_REPO }}/config-server' ]
+  id: 'Push Config Server Docker Image'
+  
+# ----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+- name: 'gcr.io/cloud-builders/mvn'
+  args: ['mvn package -DskipTests --file ./eureka-server/pom.xml']
+  id: 'Package Eureka Server'
+
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', '${{ env.GAR_ZONE }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_REPO }}/eureka-server', './eureka-server' ]
+  id: 'Build Eureka Server Docker Image'
+
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', '${{ env.GAR_ZONE }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_REPO }}/eureka-server' ]
+  id: 'Push Eureka Server Docker Image'
+  
+# ----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+- name: 'gcr.io/cloud-builders/mvn'
+  args: ['mvn package -DskipTests --file ./booking-service/pom.xml']
+  id: 'Package Booking Service'
+
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', '${{ env.GAR_ZONE }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_REPO }}/booking-service', './booking-service' ]
+  id: 'Build Booking Service Docker Image'
+
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', '${{ env.GAR_ZONE }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_REPO }}/booking-service' ]
+  id: 'Push Booking Service Docker Image'
+  
+# ----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+- name: 'gcr.io/cloud-builders/mvn'
+  args: ['mvn package -DskipTests --file ./menu-service/pom.xml']
+  id: 'Package Menu Service'
+
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', '${{ env.GAR_ZONE }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_REPO }}/booking-service', './menu-service' ]
+  id: 'Build Menu Service Docker Image'
+
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', '${{ env.GAR_ZONE }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_REPO }}/menu-service' ]
+  id: 'Push Menu Service Docker Image'
+  
+# ----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+- name: 'gcr.io/cloud-builders/mvn'
+  args: ['mvn package -DskipTests --file ./order-service/pom.xml']
+  id: 'Package Order Service'
+
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', '${{ env.GAR_ZONE }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_REPO }}/order-service', './order-service' ]
+  id: 'Build Order Service Docker Image'
+
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', '${{ env.GAR_ZONE }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_REPO }}/order-service' ]
+  id: 'Push Order Service Docker Image'
+  
+# ----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+- name: 'gcr.io/cloud-builders/mvn'
+  args: ['mvn package -DskipTests --file ./review-service/pom.xml']
+  id: 'Package Review Service'
+
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', '${{ env.GAR_ZONE }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_REPO }}/review-service', './review-service' ]
+  id: 'Build Review Service Docker Image'
+
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', '${{ env.GAR_ZONE }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_REPO }}/review-service' ]
+  id: 'Push Review Service Docker Image'
+  
+# ----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+- name: 'gcr.io/cloud-builders/mvn'
+  args: ['mvn package -DskipTests --file ./staff-service/pom.xml']
+  id: 'Package Staff Service'
+
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', '${{ env.GAR_ZONE }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_REPO }}/staff-service', './staff-service' ]
+  id: 'Build Staff Service Docker Image'
+
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', '${{ env.GAR_ZONE }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_REPO }}/staff-service' ]
+  id: 'Push Staff Service Docker Image'
+  
+# ----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+- name: 'gcr.io/cloud-builders/mvn'
+  args: ['mvn package -DskipTests --file ./table-reservation-service/pom.xml']
+  id: 'Package Table Reservation Service'
+
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', '${{ env.GAR_ZONE }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_REPO }}/table-reservation-service', './table-reservation-service' ]
+  id: 'Build Table Reservation Service Docker Image'
+
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', '${{ env.GAR_ZONE }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_REPO }}/table-reservation-service' ]
+  id: 'Push Table Reservation Service Docker Image'
+  
+# ----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+- name: 'gcr.io/cloud-builders/mvn'
+  args: ['mvn package -DskipTests --file ./api-gateway/pom.xml']
+  id: 'Package API Gateway'
+
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', '${{ env.GAR_ZONE }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_REPO }}/api-gateway', './api-gateway' ]
+  id: 'Build API Gateway Docker Image'
+
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', '${{ env.GAR_ZONE }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_REPO }}/api-gateway' ]
+  id: 'Push API Gateway Docker Image'
+  
+# ----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+- name: 'google/cloud-sdk:latest'
+  entrypoint: 'sh'
+  args:
+  - -xe
+  - -c
+  - |
+    gcloud deploy apply --file deploy/pipeline.yaml --region=us-central1
+    gcloud deploy apply --file deploy/dev.yaml --region=us-central1
+    gcloud deploy releases create 'app-release-${SHORT_SHA}' --delivery-pipeline=gke-cicd-pipeline --region=us-central1 --skaffold-file=skaffold.yaml
+
+
+options:
+  logging: CLOUD_LOGGING_ONLY
