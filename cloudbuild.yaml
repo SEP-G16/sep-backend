@@ -53,7 +53,7 @@ steps:
   id: 'Package Menu Service'
 
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'us-central1-docker.pkg.dev/sound-bee-428509-q1/hrmis-artifact-registry/booking-service', './menu-service' ]
+  args: ['build', '-t', 'us-central1-docker.pkg.dev/sound-bee-428509-q1/hrmis-artifact-registry/menu-service', './menu-service' ]
   id: 'Build Menu Service Docker Image'
 
 - name: 'gcr.io/cloud-builders/docker'
