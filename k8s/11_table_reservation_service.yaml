@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: table-reservation-service
-        image: venuraks/sep-16-table-reservation-service:0.0.1
+        image: us-central1-docker.pkg.dev/sound-bee-428509-q1/hrmis-artifact-registry/table-reservation-service
         imagePullPolicy: Always
         ports:
         - containerPort: 8085

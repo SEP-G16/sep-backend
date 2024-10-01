@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: staff-service
-        image: venuraks/sep-16-staff-service:0.0.1
+        image: us-central1-docker.pkg.dev/sound-bee-428509-q1/hrmis-artifact-registry/staff-service
         imagePullPolicy: Always
         ports:
         - containerPort: 8086

@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: menu-service
-        image: venuraks/sep-16-menu-service:0.0.1
+        image: us-central1-docker.pkg.dev/sound-bee-428509-q1/hrmis-artifact-registry/menu-service
         imagePullPolicy: Always
         ports:
         - containerPort: 8084
