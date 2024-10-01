@@ -15,30 +15,22 @@ public class TempReviewController {
     private final TempReviewService tempReviewService;
 
     @Autowired
-    public TempReviewController(TempReviewService tempReviewService)
-    {
+    public TempReviewController(TempReviewService tempReviewService) {
         this.tempReviewService = tempReviewService;
     }
 
     @GetMapping("/all")
-    public ResponseEntity<Flux<TempReview>> getAllReviews()
-    {
+    public ResponseEntity<Flux<TempReview>> getAllReviews() {
         return tempReviewService.getAllTempReviews();
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Mono<TempReview>> addTempReview(@RequestBody TempReview tempReview)
-    {
+    public ResponseEntity<Mono<TempReview>> addTempReview(@RequestBody TempReview tempReview) {
         return tempReviewService.addTempReview(tempReview);
     }
 
     @DeleteMapping("/remove")
-    public ResponseEntity<Mono<Void>> deleteTempReview(@RequestBody Long id){
+    public ResponseEntity<Mono<Void>> deleteTempReview(@RequestBody Long id) {
         return tempReviewService.removeTempReview(id);
-    }
-
-    @GetMapping("/hello")
-    public String hello() {
-        return "Hello from TempReviewController! Nice to see you! Huththoo!";
     }
 }
