@@ -39,6 +39,6 @@ public class TempReviewController {
 
     @GetMapping("/hello")
     public String hello() {
-        return "Hello from TempReviewController! Nice to see you!";
+        return "Hello from TempReviewController! Nice to see you! Huththoo!";
     }
 }
