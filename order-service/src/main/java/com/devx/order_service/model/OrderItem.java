@@ -1,8 +1,13 @@
 package com.devx.order_service.model;
 
 import com.devx.order_service.enums.OrderItemStatus;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -19,17 +24,21 @@ public class OrderItem {
     private Long id;
     private Long menuItemId;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "orderItem", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItemAddOn> addOns;
 
     private String additionalNotes;
 
     private int quantity;
 
-    @ManyToOne
-    @JoinColumn(name = "order_id", referencedColumnName = "id", nullable = false)
-    private Order order;
-
     @Enumerated(EnumType.ORDINAL)
     private OrderItemStatus status;
+
+    @CreationTimestamp
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime updatedAt;
 }
