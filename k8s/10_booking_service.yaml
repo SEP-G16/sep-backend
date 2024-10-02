@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: booking-service
-        image: venuraks/sep-16-booking-service:0.0.1
+        image: us-central1-docker.pkg.dev/sound-bee-428509-q1/hrmis-artifact-registry/booking-service
         imagePullPolicy: Always
         ports:
         - containerPort: 8083

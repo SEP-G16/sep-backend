@@ -11,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -41,7 +42,7 @@ public class TempBookingRepoTests {
         roomType.setPrice(8000.0);
 
         this.tempBooking = new TempBooking();
-        tempBooking.setCreatedAt(LocalDate.now());
+        tempBooking.setCreatedAt(LocalDateTime.now());
         tempBooking.setCustomerName("Venura");
         tempBooking.setCustomerNic("200202500190");
         tempBooking.setEmail("vks250102@gmail.com");

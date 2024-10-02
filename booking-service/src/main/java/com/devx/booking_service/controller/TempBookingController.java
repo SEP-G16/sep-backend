@@ -15,14 +15,12 @@ public class TempBookingController {
     private final TempBookingService tempBookingService;
 
     @Autowired
-    public TempBookingController(TempBookingService tempBookingService)
-    {
+    public TempBookingController(TempBookingService tempBookingService) {
         this.tempBookingService = tempBookingService;
     }
 
     @GetMapping("/all")
-    public ResponseEntity<Flux<TempBooking>> getAllTempBookings()
-    {
+    public ResponseEntity<Flux<TempBooking>> getAllTempBookings() {
         return tempBookingService.getAll();
     }
 
@@ -33,8 +31,7 @@ public class TempBookingController {
     }
 
     @DeleteMapping("/remove")
-    public ResponseEntity<Void> removeTempBooking(@RequestBody Long tempBookingId)
-    {
+    public ResponseEntity<Void> removeTempBooking(@RequestBody Long tempBookingId) {
         return tempBookingService.removeTempBooking(tempBookingId);
     }
 }
