@@ -20,7 +20,6 @@ public class Staff {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String name;
     private String role;
     private String gender;
@@ -28,6 +27,4 @@ public class Staff {
     private String address;
     private String phoneNumber;
     private String email;
-
-
 }
