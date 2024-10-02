@@ -3,6 +3,7 @@ package com.devx.order_service.utils;
 import com.devx.order_service.dto.OrderDto;
 import com.devx.order_service.dto.OrderItemAddOnDto;
 import com.devx.order_service.dto.OrderItemDto;
+import com.devx.order_service.exception.EmptyOrderItemListException;
 import com.devx.order_service.exception.NullFieldException;
 import com.devx.order_service.model.Order;
 import com.devx.order_service.model.OrderItem;
@@ -45,6 +46,11 @@ public class AppUtils {
         order.setId(orderDto.getId());
         order.setTableId(orderDto.getTableId());
         order.setTotalAmount(orderDto.getTotalAmount());
+
+        if(orderDto.getOrderItems().isEmpty())
+        {
+            throw new EmptyOrderItemListException("OrderItemList is empty");
+        }
         order.setOrderItems(orderDto.getOrderItems().stream().map(orderItemDto -> {
             if (orderItemDto.hasNullFields()) {
                 throw new NullFieldException("OrderItemDto has null fields");

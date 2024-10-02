@@ -2,10 +2,7 @@ package com.devx.order_service.service;
 
 import com.devx.order_service.dto.OrderDto;
 import com.devx.order_service.dto.request.RejectOrderItemRequestBody;
-import com.devx.order_service.exception.BadRequestException;
-import com.devx.order_service.exception.NullFieldException;
-import com.devx.order_service.exception.OrderItemNotFoundException;
-import com.devx.order_service.exception.OrderNotFoundException;
+import com.devx.order_service.exception.*;
 import com.devx.order_service.model.Order;
 import com.devx.order_service.repository.OrderRepository;
 import com.devx.order_service.utils.AppUtils;
@@ -41,9 +38,7 @@ public class OrderService {
         try {
             Order order = AppUtils.convertOrderDtoToOrder(orderDto);
             return orderServiceIntegration.createOrder(order);
-
-        } catch (NullFieldException e) {
-            LOG.error("An unexpected error occurred while saving review{}", e.getMessage());
+        } catch (EmptyOrderItemListException | NullFieldException e) {
             throw new BadRequestException(e.getMessage());
         }
     }
@@ -61,7 +56,6 @@ public class OrderService {
         try {
             return orderServiceIntegration.cancelOrder(orderId);
         } catch (OrderNotFoundException e) {
-            LOG.error("An unexpected error occurred while deleting order{}", orderId);
             throw new BadRequestException(e.getMessage());
         }
     }
