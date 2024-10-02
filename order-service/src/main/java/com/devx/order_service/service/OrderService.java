@@ -35,12 +35,8 @@ public class OrderService {
 
     @Transactional
     public Mono<OrderDto> createOrder(OrderDto orderDto) {
-        try {
-            Order order = AppUtils.convertOrderDtoToOrder(orderDto);
-            return orderServiceIntegration.createOrder(order);
-        } catch (EmptyOrderItemListException | NullFieldException e) {
-            throw new BadRequestException(e.getMessage());
-        }
+        Order order = AppUtils.convertOrderDtoToOrder(orderDto);
+        return orderServiceIntegration.createOrder(order);
     }
 
     public Flux<OrderDto> getOrders() throws Exception {
@@ -53,24 +49,16 @@ public class OrderService {
     }
 
     public Mono<Void> cancelOrder(Long orderId) {
-        try {
-            return orderServiceIntegration.cancelOrder(orderId);
-        } catch (OrderNotFoundException e) {
-            throw new BadRequestException(e.getMessage());
-        }
+        return orderServiceIntegration.cancelOrder(orderId);
     }
 
     public Mono<OrderDto> rejectOrderItem(RejectOrderItemRequestBody rejectOrderItemRequestBody) {
-        try {
-            if(rejectOrderItemRequestBody.hasNullFields())
-            {
-                throw new NullFieldException("Null fields found in request body");
-            }
-            Long orderId = rejectOrderItemRequestBody.getOrderId();
-            Long orderItemId = rejectOrderItemRequestBody.getOrderItemId();
-            return orderServiceIntegration.rejectOrderItem(orderId, orderItemId);
-        } catch (OrderNotFoundException | OrderItemNotFoundException | NullFieldException e) {
-            throw new BadRequestException(e.getMessage());
+        if (rejectOrderItemRequestBody.hasNullFields()) {
+            throw new NullFieldException("Null fields found in request body");
         }
+        Long orderId = rejectOrderItemRequestBody.getOrderId();
+        Long orderItemId = rejectOrderItemRequestBody.getOrderItemId();
+        return orderServiceIntegration.rejectOrderItem(orderId, orderItemId);
+
     }
 }
