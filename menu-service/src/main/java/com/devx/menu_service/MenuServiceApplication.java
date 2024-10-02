@@ -11,25 +11,22 @@ import reactor.core.scheduler.Schedulers;
 @SpringBootApplication
 public class MenuServiceApplication {
 
-	private final Integer threadPoolSize;
-	private final Integer taskQueueSize;
+    private final Integer threadPoolSize;
+    private final Integer taskQueueSize;
 
-	public static void main(String[] args) {
-		SpringApplication.run(MenuServiceApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(MenuServiceApplication.class, args);
+    }
 
-	@Autowired
-	public MenuServiceApplication(
-			@Value("${app.threadPoolSize:10}") Integer threadPoolSize,
-			@Value("${app.taskQueueSize:100}") Integer taskQueueSize
-	) {
-		this.threadPoolSize = threadPoolSize;
-		this.taskQueueSize = taskQueueSize;
-	}
+    @Autowired
+    public MenuServiceApplication(@Value("${app.threadPoolSize:10}") Integer threadPoolSize, @Value("${app.taskQueueSize:100}") Integer taskQueueSize) {
+        this.threadPoolSize = threadPoolSize;
+        this.taskQueueSize = taskQueueSize;
+    }
 
-	@Bean
-	public Scheduler jdbcScheduler(){
-		return Schedulers.newBoundedElastic(threadPoolSize, taskQueueSize, "jdbc-pool");
-	}
+    @Bean
+    public Scheduler jdbcScheduler() {
+        return Schedulers.newBoundedElastic(threadPoolSize, taskQueueSize, "jdbc-pool");
+    }
 
 }
