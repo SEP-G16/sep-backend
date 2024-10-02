@@ -41,5 +41,21 @@ eureka:
     leaseRenewalIntervalInSeconds: 5
     leaseExpirationDurationInSeconds: 5
 
+---
+
+spring:
+  config:
+    activate:
+      on-profile: dev-dis-eureka
+    import: "optional:configserver:http://localhost:8067/"
+  application:
+    name: order-service
+
+server:
+  port: 8081
+
+eureka:
+  client:
+    enabled: false
 
 ---
