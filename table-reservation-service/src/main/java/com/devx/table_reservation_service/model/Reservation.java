@@ -1,5 +1,6 @@
 package com.devx.table_reservation_service.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -21,6 +22,8 @@ public class Reservation {
     @Id
     private Long id;
     private String customerName;
+
+    @JsonFormat(pattern="yyyy-MM-dd")
     private LocalDate reservedDate;
     private Integer peopleCount;
     private String phoneNo;
