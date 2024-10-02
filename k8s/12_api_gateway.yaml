@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: api-gateway
-        image: venuraks/sep-16-api-gateway:0.0.1
+        image: us-central1-docker.pkg.dev/sound-bee-428509-q1/hrmis-artifact-registry/api-gateway
         imagePullPolicy: Always 
         ports:
         - containerPort: 8060

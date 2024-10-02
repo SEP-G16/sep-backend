@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: review-service
-        image: venuraks/sep-16-review-service:0.0.1
+        image: us-central1-docker.pkg.dev/sound-bee-428509-q1/hrmis-artifact-registry/review-service
         imagePullPolicy: Always
         ports:
         - containerPort: 8082
