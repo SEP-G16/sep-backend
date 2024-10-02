@@ -40,7 +40,10 @@ public class StaffServiceIntegration {
     }
 
     public Mono<StaffDto> updateStaff(Staff updatedStaff) {
-        return Mono.fromCallable(() -> updateStaffInternal(updatedStaff)).subscribeOn(jdbcScheduler).map(AppUtils::convertStaffToStaffDto);
+        return Mono.fromCallable(() -> {
+            Staff updatedEntity = updateStaffInternal(updatedStaff);
+            return AppUtils.convertStaffToStaffDto(updatedEntity);
+        }).subscribeOn(jdbcScheduler);
     }
 
     private void deleteStaffInternal(Long id) {

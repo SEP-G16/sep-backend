@@ -5,11 +5,13 @@ import com.devx.staff_service.model.Staff;
 import com.devx.staff_service.service.StaffService;
 import com.devx.staff_service.service.StaffServiceIntegration;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -19,6 +21,7 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
 
+@ExtendWith(SpringExtension.class)
 @SpringBootTest
 @ContextConfiguration
 @ActiveProfiles(value = "test")
