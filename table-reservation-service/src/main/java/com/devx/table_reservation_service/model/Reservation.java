@@ -1,6 +1,9 @@
 package com.devx.table_reservation_service.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,7 +19,6 @@ import java.util.List;
 @Builder
 public class Reservation {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)  // Auto-generates the ID
     private Long id;
     private String customerName;
     private LocalDate reservedDate;

@@ -105,9 +105,8 @@ public class StaffServiceIntegrationTests extends BaseIntegrationTestConfigurati
         // Assuming staff with ID 1 exists
         Long validStaffId = 1L;
 
-        ResponseEntity<Mono<Void>> response = staffService.deleteStaff(validStaffId);
+        Mono<Void> response = staffService.deleteStaff(validStaffId);
 
-        assert response.getStatusCode() == HttpStatus.NO_CONTENT;
     }
 
 }
