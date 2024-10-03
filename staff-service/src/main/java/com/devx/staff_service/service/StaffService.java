@@ -1,7 +1,11 @@
 package com.devx.staff_service.service;
 
+import com.devx.staff_service.dto.StaffDto;
+import com.devx.staff_service.exception.BadRequestException;
+import com.devx.staff_service.exception.NullFieldException;
 import com.devx.staff_service.model.Staff;
 import com.devx.staff_service.repository.StaffRepository;
+import com.devx.staff_service.utils.AppUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,53 +20,33 @@ import reactor.core.scheduler.Scheduler;
 @Service
 public class StaffService {
 
-    private final StaffRepository staffRepository;
-    private final Scheduler jdbcScheduler;
+    private final StaffServiceIntegration staffServiceIntegration;
 
     private static final Logger LOG = LoggerFactory.getLogger(StaffService.class);
 
     @Autowired
-    public StaffService(StaffRepository staffRepository, @Qualifier("jdbcScheduler") Scheduler jdbcScheduler) {
-        this.staffRepository = staffRepository;
-        this.jdbcScheduler = jdbcScheduler;
+    public StaffService(StaffServiceIntegration staffServiceIntegration) {
+        this.staffServiceIntegration = staffServiceIntegration;
     }
 
-    private Staff insertStaffMember(Staff staff) {
-        return staffRepository.save(staff);
+    public Mono<StaffDto> addStaff(StaffDto staffDto) {
+        Staff staff = AppUtils.convertStaffDtoToStaff(staffDto);
+        return staffServiceIntegration.addStaff(staff);
     }
 
-    public ResponseEntity<Mono<Staff>> addStaff(Staff staff) {
-        try {
-            Mono<Staff> mono = Mono.fromCallable(() -> insertStaffMember(staff)).subscribeOn(jdbcScheduler);
-            return new ResponseEntity<>(mono, HttpStatus.CREATED);
-        } catch (Exception e) {
-            LOG.error("An unexpected error occurred while adding staff", e);
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    public Flux<StaffDto> getAllStaff(){
+        return staffServiceIntegration.getAllStaff();
+    }
+
+    public Mono<StaffDto> updateStaff(StaffDto updatedStaffDto) {
+        Staff updatedStaff = AppUtils.convertStaffDtoToStaff(updatedStaffDto);
+        if(updatedStaff.getId() == null) {
+            throw new NullFieldException("Staff ID is required for updating staff");
         }
+        return staffServiceIntegration.updateStaff(updatedStaff);
     }
 
-    public ResponseEntity<Mono<Staff>> updateStaff(Long id, Staff updatedStaff) {
-        try {
-            Mono<Staff> mono = Mono.fromCallable(() -> {
-                return staffRepository.updateOrInsert(updatedStaff);
-            }).subscribeOn(jdbcScheduler);
-
-            return new ResponseEntity<>(mono, HttpStatus.OK);
-        } catch (Exception e) {
-            LOG.error("An unexpected error occurred while updating staff", e);
-            return new ResponseEntity<>(Mono.error(e), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    public ResponseEntity<Mono<Void>> deleteStaff(Long id) {
-        try {
-            Mono<Void> deleteMono = Mono.fromRunnable(() -> staffRepository.deleteById(id))
-                    .subscribeOn(jdbcScheduler).then();
-
-            return new ResponseEntity<>(deleteMono, HttpStatus.NO_CONTENT);
-        } catch (Exception e) {
-            LOG.error("An unexpected error occurred while deleting staff", e);
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public Mono<Void> deleteStaff(Long id) {
+        return staffServiceIntegration.deleteStaff(id);
     }
 }
