@@ -1,7 +1,11 @@
 package com.devx.order_service.service;
 
+import com.devx.order_service.dto.OrderDto;
+import com.devx.order_service.dto.request.RejectOrderItemRequestBody;
+import com.devx.order_service.exception.*;
 import com.devx.order_service.model.Order;
 import com.devx.order_service.repository.OrderRepository;
+import com.devx.order_service.utils.AppUtils;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,62 +26,39 @@ public class OrderService {
 
     public static Logger LOG = LoggerFactory.getLogger(OrderService.class);
 
-    private final OrderRepository orderRepository;
-
-    private final Scheduler jdbcScheduler;
+    private final OrderServiceIntegration orderServiceIntegration;
 
     @Autowired
-    public OrderService(OrderRepository orderRepository, @Qualifier("jdbcScheduler") Scheduler jdbcScheduler)
-    {
-        this.orderRepository = orderRepository;
-        this.jdbcScheduler = jdbcScheduler;
+    public OrderService(OrderServiceIntegration orderServiceIntegration) {
+        this.orderServiceIntegration = orderServiceIntegration;
     }
 
     @Transactional
-    public ResponseEntity<Mono<Order>> createOrder(Order order) {
+    public Mono<OrderDto> createOrder(OrderDto orderDto) {
+        Order order = AppUtils.convertOrderDtoToOrder(orderDto);
+        return orderServiceIntegration.createOrder(order);
+    }
+
+    public Flux<OrderDto> getOrders() throws Exception {
         try {
-            Mono<Order> saved = Mono.fromCallable(() -> orderRepository.save(order)).subscribeOn(jdbcScheduler);
-            return new ResponseEntity<>(saved, HttpStatus.CREATED);
+            return orderServiceIntegration.getAllOrders();
         } catch (Exception e) {
-            LOG.error("An unexpected error occurred while saving review");
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            LOG.error("An unexpected error occurred while fetching temp reviews{}", e.getMessage());
+            throw new Exception(e);
         }
     }
 
-    public ResponseEntity<Flux<Order>> getOrders() {
-        try {
-            Flux<Order> tempReviews = Mono.fromCallable(orderRepository::findAll).flatMapMany(Flux::fromIterable).subscribeOn(jdbcScheduler);
-            return new ResponseEntity<>(tempReviews, HttpStatus.OK);
-        } catch (Exception e) {
-            LOG.error("An unexpected error occurred while fetching temp reviews");
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public Mono<Void> cancelOrder(Long orderId) {
+        return orderServiceIntegration.cancelOrder(orderId);
     }
 
-    public ResponseEntity<Mono<Void>> cancelOrder(Long orderId) {
-        try {
-            orderRepository.deleteById(orderId);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } catch (Exception e) {
-            LOG.error("An unexpected error occurred while deleting review");
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    public Mono<OrderDto> rejectOrderItem(RejectOrderItemRequestBody rejectOrderItemRequestBody) {
+        if (rejectOrderItemRequestBody.hasNullFields()) {
+            throw new NullFieldException("Null fields found in request body");
         }
-    }
+        Long orderId = rejectOrderItemRequestBody.getOrderId();
+        Long orderItemId = rejectOrderItemRequestBody.getOrderItemId();
+        return orderServiceIntegration.rejectOrderItem(orderId, orderItemId);
 
-    public ResponseEntity<Mono<Order>> rejectOrderItem(Long orderId, Long orderItemId) {
-        try {
-            Optional<Order> order = orderRepository.findById(orderId);
-            if (order.isPresent()) {
-                Order orderObj = order.get();
-                orderObj.getOrderItems().removeIf(orderItem -> orderItem.getId().equals(orderItemId));
-                Mono<Order> saved = Mono.fromCallable(() -> orderRepository.save(orderObj)).subscribeOn(jdbcScheduler);
-                return new ResponseEntity<>(saved, HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
-        } catch (Exception e) {
-            LOG.error("An unexpected error occurred while saving review");
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
     }
 }

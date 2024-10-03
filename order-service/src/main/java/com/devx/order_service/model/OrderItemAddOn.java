@@ -16,8 +16,4 @@ public class OrderItemAddOn {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private int quantity;
-
-    @ManyToOne
-    @JoinColumn(name = "order_item_id", referencedColumnName = "id", nullable = false)
-    private OrderItem orderItem;
 }

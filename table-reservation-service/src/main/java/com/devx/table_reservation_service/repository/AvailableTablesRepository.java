@@ -30,7 +30,7 @@ public class AvailableTablesRepository {
     }
 
     // Method to call the stored procedure and get available room counts
-    public List<RestaurantTable> getAvailableRoomCount(LocalDate selectedDate, int timeSlotStart, int timeSlotEnd) throws StoredProcedureCallException, KeyNotFoundException {
+    public List<RestaurantTable> getAvailableTables(LocalDate selectedDate, int timeSlotStart, int timeSlotEnd) throws StoredProcedureCallException, KeyNotFoundException {
         try {
             // Set input parameters for the stored procedure
             SqlParameterSource in = new MapSqlParameterSource()
