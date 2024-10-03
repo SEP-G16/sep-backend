@@ -13,6 +13,6 @@ public class RestaurantTableDto {
     private Integer chairCount;
 
     public boolean hasNullFields(){
-        return !((id != null && tableNo == null) || (id == null && tableNo != null)) || chairCount == null;
+        return tableNo == null || chairCount == null;
     }
 }
