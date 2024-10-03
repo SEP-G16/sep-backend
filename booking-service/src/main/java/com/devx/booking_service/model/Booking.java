@@ -22,7 +22,6 @@ public class Booking {
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private LocalDate createdAt;
     private String customerName;
-    private String customerNic;
     private String email;
     private String phoneNo;
 
