@@ -1,25 +1,18 @@
-package com.devx.table_reservation_service.model;
+package com.devx.table_reservation_service.dto;
 
+import com.devx.table_reservation_service.model.RestaurantTable;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.List;
 
-@Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class Reservation {
-    @Id
+public class ReservationDto {
     private Long id;
     private String customerName;
 
@@ -29,7 +22,9 @@ public class Reservation {
     private String phoneNo;
     private Integer timeSlotStart;
     private Integer timeSlotEnd;
+    private List<RestaurantTableDto> restaurantTableList;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    private List<RestaurantTable> restaurantTableList;
+    public boolean hasNullFields(){
+        return customerName == null || reservedDate == null || peopleCount == null || phoneNo == null || timeSlotStart == null || timeSlotEnd == null || restaurantTableList == null;
+    }
 }
