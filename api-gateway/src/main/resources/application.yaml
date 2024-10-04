@@ -4,6 +4,13 @@ spring:
   cloud:
     gateway:
       routes:
+        - id: AUTH-SERVICE
+          uri: lb://AUTH-SERVICE
+          predicates:
+            - Path=/api/auth/**
+          filters:
+            - RewritePath=/api/auth/(?<segment>.*), /auth/${segment}
+
         - id: REVIEW-SERVICE
           uri: lb://REVIEW-SERVICE
           predicates:
@@ -38,6 +45,10 @@ spring:
     import: "optional:configserver:http://localhost:8067/"
   application:
     name: api-gateway
+
+jwt:
+  secret-key: ThisIsSecretForJWTHS512SignatureAlgorithmThatMUSTHave64ByteLength
+  token-expiration-seconds: 1800
 
 server:
   port: 8060
