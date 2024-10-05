@@ -26,7 +26,7 @@ public class OrderController {
         this.orderService = orderService;
     }
 
-    @PostMapping("/create")
+    @PostMapping("/add")
     public ResponseEntity<Mono<OrderDto>> createOrder(@RequestBody OrderDto orderDto) {
         try {
             return ResponseEntity.created(null).body(orderService.createOrder(orderDto));
