@@ -1,4 +1,4 @@
-package com.devx.order_service;
+package com.devx.review_service;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
