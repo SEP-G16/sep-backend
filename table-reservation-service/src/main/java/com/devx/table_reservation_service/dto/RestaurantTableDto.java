@@ -12,7 +12,9 @@ public class RestaurantTableDto {
     private Integer tableNo;
     private Integer chairCount;
 
-    public boolean hasNullFields(){
-        return !((id != null && tableNo == null) || (id == null && tableNo != null)) || chairCount == null;
+    public boolean hasNullFields() {
+        // Check that tableNo and chairCount are not null (ignore id since it's auto-generated)
+        return tableNo == null || chairCount == null;
     }
+
 }
