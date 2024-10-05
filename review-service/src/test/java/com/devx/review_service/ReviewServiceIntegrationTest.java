@@ -61,5 +61,24 @@ public class ReviewServiceIntegrationTest extends BaseIntegrationTestConfigurati
         assertEquals(ReviewStatus.Rejected, rejectedReview.getStatus());
     }
 
+    @Test
+    void addReviewTest() {
+        // Step 1: Create a ReviewDto object
+        ReviewDto reviewDto = new ReviewDto();
+        reviewDto.setName("John Doe");
+        reviewDto.setFeedback("Excellent service!");
+
+        // Step 2: Add the review using the ReviewService
+        Mono<ReviewDto> reviewDtoMono = reviewService.addReview(reviewDto);
+
+        // Step 3: Verify that the review is added successfully
+        ReviewDto savedReviewDto = reviewDtoMono.block();
+        assertNotNull(savedReviewDto);  // Check that the saved review is not null
+        assertNotNull(savedReviewDto.getId());  // Check that the ID is not null
+        assertEquals("John Doe", savedReviewDto.getName());  // Verify the name
+        assertEquals("Excellent service!", savedReviewDto.getFeedback());  // Verify feedback
+        assertEquals(ReviewStatus.Pending, savedReviewDto.getStatus());  // Verify initial status
+    }
+
 
 }
