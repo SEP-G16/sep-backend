@@ -15,4 +15,5 @@ public class RestaurantTableDto {
     public boolean hasNullFields(){
         return tableNo == null || chairCount == null;
     }
+
 }

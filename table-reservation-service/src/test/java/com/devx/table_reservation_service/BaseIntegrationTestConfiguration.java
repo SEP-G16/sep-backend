@@ -1,5 +1,4 @@
 package com.devx.table_reservation_service;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -39,4 +38,8 @@ public class BaseIntegrationTestConfiguration {
     {
         Assertions.assertTrue(mySQLContainer.isRunning());
     }
+
 }
+
+
+
