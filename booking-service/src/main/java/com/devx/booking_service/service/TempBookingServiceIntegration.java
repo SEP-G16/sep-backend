@@ -10,6 +10,7 @@ import com.devx.booking_service.utils.AppUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
@@ -66,7 +67,8 @@ public class TempBookingServiceIntegration {
                 .subscribeOn(jdbcScheduler);
     }
 
-    private void removeReservationInternal(Long id) {
+    @Transactional
+    protected void removeReservationInternal(Long id) {
         Optional<TempBooking> existingTempBookingOptional = tempBookingRepository.findById(id);
         if (existingTempBookingOptional.isPresent()) {
             tempBookingRepository.deleteById(id);
@@ -75,6 +77,7 @@ public class TempBookingServiceIntegration {
         }
     }
 
+    @Transactional
     public Mono<Void> removeReservation(Long id)
     {
         removeReservationInternal(id);

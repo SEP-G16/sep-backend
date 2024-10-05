@@ -61,6 +61,7 @@ public class AppUtils {
             RoomTypeDto roomTypeDto = new RoomTypeDto();
             roomTypeDto.setId(roomType.getId());
             roomTypeDto.setType(roomType.getType());
+            roomTypeDto.setPrice(roomType.getPrice());
             return roomTypeDto;
         }
 
