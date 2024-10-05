@@ -133,7 +133,7 @@ steps:
 
 - name: 'gcr.io/cloud-builders/docker'
   args: ['push', 'us-central1-docker.pkg.dev/stone-album-437618-f8/hrmis-artifact-registry/auth-service' ]
-  id: 'Push API Gateway Docker Image'
+  id: 'Push Auth Service Docker Image'
   
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
