@@ -44,7 +44,6 @@ public class TempBookingRepoTests {
         this.tempBooking = new TempBooking();
         tempBooking.setCreatedAt(LocalDateTime.now());
         tempBooking.setCustomerName("Venura");
-        tempBooking.setCustomerNic("200202500190");
         tempBooking.setEmail("vks250102@gmail.com");
         tempBooking.setPhoneNo("0776990588");
         tempBooking.setRoomType(roomType);
