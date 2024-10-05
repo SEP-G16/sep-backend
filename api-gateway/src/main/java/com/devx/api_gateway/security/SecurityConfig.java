@@ -35,7 +35,10 @@ class SecurityConfig {
         return http
                 .authorizeExchange(exchanges -> exchanges
                         .matchers(ServerWebExchangeMatchers.pathMatchers("/api/auth/**")).permitAll()
-                        .matchers(ServerWebExchangeMatchers.pathMatchers("/api/review/**")).hasAnyRole("ADMIN", "HOTEL_MANAGER")
+                        .matchers(ServerWebExchangeMatchers.pathMatchers("/api/review/add")).permitAll()
+                        .matchers(ServerWebExchangeMatchers.pathMatchers("/api/booking/temp/add")).permitAll()
+                        .matchers(ServerWebExchangeMatchers.pathMatchers("/api/menu/all")).permitAll()
+                        .matchers(ServerWebExchangeMatchers.pathMatchers("/api/order/add")).permitAll()
                         .anyExchange().authenticated()
                 )
                 .sessionManagement((sessions) ->
