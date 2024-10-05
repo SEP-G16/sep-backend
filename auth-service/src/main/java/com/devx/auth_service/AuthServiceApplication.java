@@ -20,8 +20,8 @@ public class AuthServiceApplication {
 
 	@Autowired
 	public AuthServiceApplication(
-			@Value("${app.threadPoolSize:10}") Integer threadPoolSize,
-			@Value("${app.taskQueueSize:100}") Integer taskQueueSize
+			@Value("${app.threadPoolSize:3}") Integer threadPoolSize,
+			@Value("${app.taskQueueSize:20}") Integer taskQueueSize
 	) {
 		this.threadPoolSize = threadPoolSize;
 		this.taskQueueSize = taskQueueSize;
