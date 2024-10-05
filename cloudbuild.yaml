@@ -129,7 +129,7 @@ steps:
 
 - name: 'gcr.io/cloud-builders/docker'
   args: ['build', '-t', 'us-central1-docker.pkg.dev/stone-album-437618-f8/hrmis-artifact-registry/auth-service', './auth-service' ]
-  id: 'Build API Gateway Docker Image'
+  id: 'Build Auth Service Docker Image'
 
 - name: 'gcr.io/cloud-builders/docker'
   args: ['push', 'us-central1-docker.pkg.dev/stone-album-437618-f8/hrmis-artifact-registry/auth-service' ]
