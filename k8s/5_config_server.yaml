@@ -31,7 +31,7 @@ spec:
     spec:
       containers:
         - name: config-server
-          image: us-central1-docker.pkg.dev/sound-bee-428509-q1/hrmis-artifact-registry/config-server
+          image: us-central1-docker.pkg.dev/stone-album-437618-f8/hrmis-artifact-registry/config-server
           imagePullPolicy: Always
           ports:
             - containerPort: 8888

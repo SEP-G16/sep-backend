@@ -1,31 +1,31 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: table-reservation-service-deployment
+  name: staff-service-deployment
   labels:
-    app: table-reservation-service
+    app: staff-service
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: table-reservation-service
+      app: staff-service
   template:
     metadata:
       labels:
-        app: table-reservation-service
+        app: staff-service
     spec:
       containers:
-      - name: table-reservation-service
-        image: us-central1-docker.pkg.dev/sound-bee-428509-q1/hrmis-artifact-registry/table-reservation-service
+      - name: staff-service
+        image: us-central1-docker.pkg.dev/stone-album-437618-f8/hrmis-artifact-registry/staff-service
         imagePullPolicy: Always
         ports:
-        - containerPort: 8085
+        - containerPort: 8086
         env:
         - name: SPRING_APPLICATION_NAME
           valueFrom:
             configMapKeyRef:
               name: hrmis-config-map
-              key: TABLE_RESERVATION_SERVICE_APPLICATION_NAME
+              key: STAFF_SERVICE_APPLICATION_NAME
         - name: SPRING_CONFIG_IMPORT
           valueFrom: 
             configMapKeyRef:
@@ -40,11 +40,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: table-reservation-service
+  name: staff-service
 spec:
   selector:
-    app: table-reservation-service
+    app: staff-service
   ports:
     - protocol: TCP
       port: 80
-      targetPort: 8085
+      targetPort: 8086

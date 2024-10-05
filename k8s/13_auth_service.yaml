@@ -1,31 +1,31 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: order-service-deployment
+  name: auth-service-deployment
   labels:
-    app: order-service
+    app: auth-service
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: order-service
+      app: auth-service
   template:
     metadata:
       labels:
-        app: order-service
+        app: auth-service
     spec:
       containers:
-      - name: order-service
-        image: us-central1-docker.pkg.dev/sound-bee-428509-q1/hrmis-artifact-registry/order-service
+      - name: auth-service
+        image: us-central1-docker.pkg.dev/stone-album-437618-f8/hrmis-artifact-registry/auth-service
         imagePullPolicy: Always
         ports:
-        - containerPort: 8081
+        - containerPort: 8090
         env:
         - name: SPRING_APPLICATION_NAME
           valueFrom:
             configMapKeyRef:
               name: hrmis-config-map
-              key: ORDER_SERVICE_APPLICATION_NAME
+              key: AUTH_SERVICE_APPLICATION_NAME
         - name: SPRING_CONFIG_IMPORT
           valueFrom: 
             configMapKeyRef:
@@ -36,15 +36,25 @@ spec:
             configMapKeyRef:
               name: hrmis-config-map
               key: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
+        - name: JWT_SECRET_KEY
+          valueFrom: 
+            secretKeyRef:
+              name: jwt-creds
+              key: key
+        - name: JWT_TOKEN_EXPIRATION_SECONDS
+          valueFrom: 
+            configMapKeyRef:
+              name: hrmis-config-map
+              key: JWT_TOKEN_EXPIRATION_SECONDS
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: order-service
+  name: auth-service
 spec:
   selector:
-    app: order-service
+    app: auth-service
   ports:
     - protocol: TCP
       port: 80
-      targetPort: 8081
+      targetPort: 8090

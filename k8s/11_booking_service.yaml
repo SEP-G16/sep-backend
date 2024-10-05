@@ -1,38 +1,36 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: review-service-deployment
+  name: booking-service-deployment
   labels:
-    app: review-service
+    app: booking-service
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: review-service
+      app: booking-service
   template:
     metadata:
       labels:
-        app: review-service
+        app: booking-service
     spec:
       containers:
-      - name: review-service
-        image: us-central1-docker.pkg.dev/sound-bee-428509-q1/hrmis-artifact-registry/review-service
+      - name: booking-service
+        image: us-central1-docker.pkg.dev/stone-album-437618-f8/hrmis-artifact-registry/booking-service
         imagePullPolicy: Always
         ports:
-        - containerPort: 8082
-        
+        - containerPort: 8083
         env:
         - name: SPRING_APPLICATION_NAME
           valueFrom:
             configMapKeyRef:
               name: hrmis-config-map
-              key: REVIEW_SERVICE_APPLICATION_NAME
+              key: BOOKING_SERVICE_APPLICATION_NAME
         - name: SPRING_CONFIG_IMPORT
           valueFrom: 
             configMapKeyRef:
               name: hrmis-config-map
               key: SPRING_CONFIG_IMPORT
-
         - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
           valueFrom: 
             configMapKeyRef:
@@ -42,11 +40,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: review-service
+  name: booking-service
 spec:
   selector:
-    app: review-service
+    app: booking-service
   ports:
     - protocol: TCP
       port: 80
-      targetPort: 8082
+      targetPort: 8083
