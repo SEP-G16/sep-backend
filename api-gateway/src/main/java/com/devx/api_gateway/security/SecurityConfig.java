@@ -39,6 +39,7 @@ class SecurityConfig {
                         .matchers(ServerWebExchangeMatchers.pathMatchers("/api/booking/temp/add")).permitAll()
                         .matchers(ServerWebExchangeMatchers.pathMatchers("/api/menu/all")).permitAll()
                         .matchers(ServerWebExchangeMatchers.pathMatchers("/api/order/add")).permitAll()
+                        .matchers(ServerWebExchangeMatchers.pathMatchers("/api/room-type/available-count")).permitAll()
                         .anyExchange().authenticated()
                 )
                 .sessionManagement((sessions) ->
