@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: test-auth-service
+  config:
+    import: "optional:configserver:http://localhost:8888/"
+eureka:
+  client:
+    enabled: false
