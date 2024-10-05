@@ -25,7 +25,6 @@ public class TempBooking {
     private LocalDateTime createdAt;
 
     private String customerName;
-    private String customerNic;
     private String email;
     private String phoneNo;
 

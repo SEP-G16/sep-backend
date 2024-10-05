@@ -1,42 +1,38 @@
-package com.devx.booking_service.model;
+package com.devx.booking_service.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.time.LocalDateTime;
 
-@Entity
 @Data
-@Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class Booking {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class TempBookingDto {
     private Long id;
-
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
+
     private String customerName;
     private String email;
     private String phoneNo;
 
-    @ManyToOne
-    private RoomType roomType;
+    private RoomTypeDto roomType;
     private int adultCount;
     private int childrenCount;
     private int roomCount;
-
-    @OneToMany
-    private List<Room> roomList;
 
     @JsonFormat(pattern="yyyy-MM-dd")
     private LocalDate checkinDate;
 
     @JsonFormat(pattern="yyyy-MM-dd")
     private LocalDate checkoutDate;
+
+    public boolean hasNullFields()
+    {
+        return customerName == null || email == null || phoneNo == null || roomType == null || adultCount == 0 || roomCount == 0 || checkinDate == null || checkoutDate == null;
+    }
 }

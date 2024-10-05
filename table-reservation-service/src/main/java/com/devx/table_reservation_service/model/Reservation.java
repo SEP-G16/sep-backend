@@ -1,5 +1,7 @@
 package com.devx.table_reservation_service.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,6 +27,6 @@ public class Reservation {
     private Integer timeSlotStart;
     private Integer timeSlotEnd;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     private List<RestaurantTable> restaurantTableList;
 }

@@ -62,12 +62,12 @@ public class StaffServiceIntegration {
         return Mono.empty();
     }
 
-    private List<StaffDto> getAllStaffInternal()
+    private List<Staff> getAllStaffInternal()
     {
-        return staffRepository.findAll().stream().map(AppUtils::convertStaffToStaffDto).toList();
+        return staffRepository.findAll();
     }
 
     public Flux<StaffDto> getAllStaff() {
-        return Mono.fromCallable(this::getAllStaffInternal).subscribeOn(jdbcScheduler).flatMapMany(Flux::fromIterable);
+        return Mono.fromCallable(() -> getAllStaffInternal().stream().map(AppUtils::convertStaffToStaffDto).toList()).subscribeOn(jdbcScheduler).flatMapMany(Flux::fromIterable);
     }
 }

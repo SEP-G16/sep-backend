@@ -47,10 +47,12 @@ public class ReservationIntegrationTests extends BaseIntegrationTestConfiguratio
         tableRepository.deleteAll();
 
         RestaurantTable table1 = new RestaurantTable();
+        table1.setId(1L);
         table1.setTableNo(1);
         table1.setChairCount(4);
 
         RestaurantTable table2 = new RestaurantTable();
+        table2.setId(2L);
         table2.setTableNo(2);
         table2.setChairCount(2);
 
@@ -112,7 +114,6 @@ public class ReservationIntegrationTests extends BaseIntegrationTestConfiguratio
             assertThat(reservation.getCustomerName()).isEqualTo(testReservation2.getCustomerName());
             assertThat(reservation.getPhoneNo()).isEqualTo(testReservation2.getPhoneNo());
         }).verifyComplete();
-
     }
 
     @Test

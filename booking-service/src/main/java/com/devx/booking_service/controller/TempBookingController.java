@@ -1,5 +1,10 @@
 package com.devx.booking_service.controller;
 
+import com.devx.booking_service.dto.TempBookingDto;
+import com.devx.booking_service.exception.NullFieldException;
+import com.devx.booking_service.exception.RoomNotFoundException;
+import com.devx.booking_service.exception.RoomTypeNotFoundException;
+import com.devx.booking_service.exception.TempBookingNotFoundException;
 import com.devx.booking_service.model.TempBooking;
 import com.devx.booking_service.service.TempBookingService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,18 +25,37 @@ public class TempBookingController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<Flux<TempBooking>> getAllTempBookings() {
-        return tempBookingService.getAll();
+    public ResponseEntity<Flux<TempBookingDto>> getAllTempBookings() {
+        try {
+            return ResponseEntity.ok().body(tempBookingService.getAllReservations());
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(Flux.error(e));
+        }
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Mono<TempBooking>> addTempBooking(@RequestBody TempBooking tempBooking) //TODO:Create DTO for this
+    public ResponseEntity<Mono<TempBookingDto>> addTempBooking(@RequestBody TempBookingDto tempBookingDto)
     {
-        return tempBookingService.insert(tempBooking);
+        try {
+            return ResponseEntity.created(null).body(tempBookingService.addReservation(tempBookingDto));
+        } catch (NullFieldException e) {
+            return ResponseEntity.badRequest().body(Mono.error(e));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(Mono.error(e));
+        }
     }
 
     @DeleteMapping("/remove")
-    public ResponseEntity<Void> removeTempBooking(@RequestBody Long tempBookingId) {
-        return tempBookingService.removeTempBooking(tempBookingId);
+    public ResponseEntity<Mono<Void>> removeTempBooking(@RequestBody Long tempBookingId) {
+        try {
+            return ResponseEntity.ok().body(tempBookingService.removeReservation(tempBookingId));
+        }
+        catch (TempBookingNotFoundException e)
+        {
+            return ResponseEntity.notFound().build();
+        }
+        catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
     }
 }

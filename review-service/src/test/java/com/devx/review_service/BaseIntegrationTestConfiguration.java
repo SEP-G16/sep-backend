@@ -1,4 +1,5 @@
-package com.devx.table_reservation_service;
+package com.devx.review_service;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,6 +15,8 @@ import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import java.time.Duration;
+
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @Testcontainers
@@ -23,23 +26,20 @@ public class BaseIntegrationTestConfiguration {
     public static final Logger LOG = LoggerFactory.getLogger(BaseIntegrationTestConfiguration.class);
 
     @Container
-    static MySQLContainer mySQLContainer = new MySQLContainer("mysql:latest");
+    static MySQLContainer mySQLContainer = (MySQLContainer) new MySQLContainer("mysql:latest")
+            .withStartupTimeout(Duration.ofMinutes(5));
 
     @DynamicPropertySource
-    static void configureTestProperties(DynamicPropertyRegistry registry){
-        registry.add("spring.datasource.url",() -> mySQLContainer.getJdbcUrl());
-        registry.add("spring.datasource.username",() -> mySQLContainer.getUsername());
-        registry.add("spring.datasource.password",() -> mySQLContainer.getPassword());
-        registry.add("spring.jpa.hibernate.ddl-auto",() -> "create-drop");
+    static void configureTestProperties(DynamicPropertyRegistry registry) {
+        registry.add("spring.datasource.url", () -> mySQLContainer.getJdbcUrl());
+        registry.add("spring.datasource.username", () -> mySQLContainer.getUsername());
+        registry.add("spring.datasource.password", () -> mySQLContainer.getPassword());
+        registry.add("spring.jpa.hibernate.ddl-auto", () -> "create");
     }
 
     @Test
-    void isContainerRunningTest()
-    {
+    void isContainerRunningTest() {
+        LOG.info("Container logs: {}", mySQLContainer.getLogs());
         Assertions.assertTrue(mySQLContainer.isRunning());
     }
-
 }
-
-
-

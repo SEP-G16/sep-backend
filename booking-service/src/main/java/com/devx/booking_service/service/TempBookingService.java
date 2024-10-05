@@ -1,9 +1,12 @@
 package com.devx.booking_service.service;
 
+import com.devx.booking_service.dto.TempBookingDto;
 import com.devx.booking_service.model.TempBooking;
 import com.devx.booking_service.repository.TempBookingRepository;
+import com.devx.booking_service.utils.AppUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,49 +16,24 @@ import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
 
 @Service
-public class TempBookingService extends BaseService<TempBooking>{
+public class TempBookingService {
+    private final TempBookingServiceIntegration tempBookingServiceIntegration;
 
-    public static final Logger LOG = LoggerFactory.getLogger(TempBookingService.class);
-
-    private final TempBookingRepository tempBookingRepository;
-
-    public TempBookingService(TempBookingRepository tempBookingRepository, @Qualifier("jdbcScheduler") Scheduler jdbcScheduler){
-        super(jdbcScheduler);
-        this.tempBookingRepository = tempBookingRepository;
+    @Autowired
+    public TempBookingService(TempBookingServiceIntegration tempBookingServiceIntegration) {
+        this.tempBookingServiceIntegration = tempBookingServiceIntegration;
     }
 
-    @Override
-    public ResponseEntity<Mono<TempBooking>> insert(TempBooking tempBooking) {
-        try {
-            Mono<TempBooking> savedMono = Mono.fromCallable(() -> tempBookingRepository.save(tempBooking)).subscribeOn(jdbcScheduler);
-            return new ResponseEntity<>(savedMono, HttpStatus.CREATED);
-        }
-        catch (Exception e)
-        {
-            LOG.error("Error saving temp booking");
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public Mono<TempBookingDto> addReservation(TempBookingDto tempBookingDto) {
+        TempBooking tempBooking = AppUtils.TempBookingUtils.convertDtoToEntity(tempBookingDto);
+        return tempBookingServiceIntegration.createReservation(tempBooking);
     }
 
-    @Override
-    public ResponseEntity<Flux<TempBooking>> getAll() {
-        try{
-            Flux<TempBooking> allTempBookings = Mono.fromCallable(tempBookingRepository::findAll).flatMapMany(Flux::fromIterable).subscribeOn(jdbcScheduler);
-            return new ResponseEntity<>(allTempBookings, HttpStatus.OK);
-        }catch (Exception e){
-            LOG.error(String.format("Error fetching temp bookings : %s", e.toString()));
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public Flux<TempBookingDto> getAllReservations() {
+        return tempBookingServiceIntegration.getAllReservations();
     }
 
-    public ResponseEntity<Void> removeTempBooking(Long id)
-    {
-        try{
-            tempBookingRepository.deleteById(id);
-            return ResponseEntity.noContent().build();
-        }catch (Exception e){
-            LOG.error(String.format("Error deleting tempBooking %d : %s", id, e.getMessage()));
-            return ResponseEntity.internalServerError().build();
-        }
+    public Mono<Void> removeReservation(Long id) {
+        return tempBookingServiceIntegration.removeReservation(id);
     }
 }

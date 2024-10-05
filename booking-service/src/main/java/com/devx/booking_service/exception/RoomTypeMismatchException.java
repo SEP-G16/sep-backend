@@ -1,9 +1,9 @@
 package com.devx.booking_service.exception;
 
-public class KeyNotFoundException extends RuntimeException{
-    public KeyNotFoundException(){}
+public class RoomTypeMismatchException extends RuntimeException{
+    public RoomTypeMismatchException(){}
 
-    public KeyNotFoundException(String message){
+    public RoomTypeMismatchException(String message){
         super(message);
     }
 

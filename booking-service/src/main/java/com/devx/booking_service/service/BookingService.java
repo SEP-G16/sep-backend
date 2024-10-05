@@ -1,5 +1,6 @@
 package com.devx.booking_service.service;
 
+import com.devx.booking_service.dto.BookingDto;
 import com.devx.booking_service.exception.NoRoomsSelectedException;
 import com.devx.booking_service.model.Booking;
 import com.devx.booking_service.model.Room;
@@ -7,6 +8,7 @@ import com.devx.booking_service.repository.BookingRepository;
 import com.devx.booking_service.repository.RoomRepository;
 import com.devx.booking_service.repository.RoomTypeRepository;
 import com.devx.booking_service.repository.TempBookingRepository;
+import com.devx.booking_service.utils.AppUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,71 +21,28 @@ import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
 
 @Service
-public class BookingService extends BaseService<Booking>{
+public class BookingService {
 
-    public static final Logger LOG = LoggerFactory.getLogger(BookingService.class);
-
-    private final RoomTypeRepository roomTypeRepository;
-    private final RoomRepository roomRepository;
-    private final TempBookingRepository tempBookingRepository;
-    private final BookingRepository bookingRepository;
+    private final BookingServiceIntegration bookingServiceIntegration;
 
     @Autowired
     public BookingService(
-            @Qualifier("jdbcScheduler") Scheduler jdbcScheduler,
-            RoomTypeRepository roomTypeRepository,
-            RoomRepository roomRepository,
-            TempBookingRepository tempBookingRepository,
-            BookingRepository bookingRepository
+            BookingServiceIntegration bookingServiceIntegration
     ){
-        super(jdbcScheduler);
-        this.roomTypeRepository = roomTypeRepository;
-        this.roomRepository = roomRepository;
-        this.tempBookingRepository = tempBookingRepository;
-        this.bookingRepository = bookingRepository;
+        this.bookingServiceIntegration = bookingServiceIntegration;
     }
 
-    @Override
-    public ResponseEntity<Mono<Booking>> insert(Booking booking) {
-        try {
-            if (booking.getRoomList() != null) {
-                Mono<Booking> savedMono = Mono.fromCallable(() -> bookingRepository.save(booking)).subscribeOn(jdbcScheduler);
-                return new ResponseEntity<>(savedMono, HttpStatus.CREATED);
-            }
-            else {
-                throw new NoRoomsSelectedException("No rooms have been selected");
-            }
-        }
-        catch (NoRoomsSelectedException e){
-            LOG.error("No rooms have been selected");
-            return ResponseEntity.badRequest().build();
-        }
-        catch (Exception e)
-        {
-            LOG.error("Error saving booking");
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public Mono<BookingDto> addBooking(BookingDto bookingDto) {
+        Booking booking = AppUtils.BookingUtils.convertDtoToEntity(bookingDto);
+        return bookingServiceIntegration.addBooking(booking);
     }
 
-    @Override
-    public ResponseEntity<Flux<Booking>> getAll() {
-        try{
-            Flux<Booking> allRooms = Mono.fromCallable(bookingRepository::findAll).flatMapMany(Flux::fromIterable).subscribeOn(jdbcScheduler);
-            return new ResponseEntity<>(allRooms, HttpStatus.OK);
-        }catch (Exception e){
-            LOG.error("Error fetching all bookings");
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+
+    public Flux<BookingDto> getAllBookings() {
+        return bookingServiceIntegration.getAllBookings();
     }
 
-    public ResponseEntity<Void> removeBooking(Long bookingId) {
-        try {
-            bookingRepository.deleteById(bookingId);
-            return ResponseEntity.ok().build();
-        }
-        catch (Exception e)
-        {
-            return ResponseEntity.internalServerError().build();
-        }
+    public Mono<Void> removeBooking(Long bookingId) {
+        return bookingServiceIntegration.removeBooking(bookingId);
     }
 }

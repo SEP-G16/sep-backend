@@ -1,6 +1,6 @@
 package com.devx.booking_service.exception;
 
-public class NoRoomsSelectedException extends Exception{
+public class NoRoomsSelectedException extends RuntimeException{
 
     public NoRoomsSelectedException(){}
 
