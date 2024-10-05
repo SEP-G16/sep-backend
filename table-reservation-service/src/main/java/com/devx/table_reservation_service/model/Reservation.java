@@ -1,6 +1,7 @@
 package com.devx.table_reservation_service.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,8 +21,6 @@ public class Reservation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String customerName;
-
-    @JsonFormat(pattern="yyyy-MM-dd")
     private LocalDate reservedDate;
     private Integer peopleCount;
     private String phoneNo;
