@@ -1,6 +1,7 @@
 package com.devx.booking_service.service;
 
 import com.devx.booking_service.dto.RoomTypeDto;
+import com.devx.booking_service.dto.request.AddRoomTypeRequestBody;
 import com.devx.booking_service.exception.KeyNotFoundException;
 import com.devx.booking_service.model.RoomType;
 import com.devx.booking_service.record.RoomCountByRoomType;
@@ -32,9 +33,9 @@ public class RoomTypeService{
     }
 
 
-    public Mono<RoomTypeDto> addRoomType(RoomTypeDto roomTypeDto)
+    public Mono<RoomTypeDto> addRoomType(AddRoomTypeRequestBody roomTypeDto)
     {
-        RoomType roomType = AppUtils.RoomTypeUtils.convertDtoToEntity(roomTypeDto);
+        RoomType roomType = AppUtils.RoomTypeUtils.convertAddRoomTypeReqBodyToEntity(roomTypeDto);
         return roomTypeServiceIntegration.addRoomType(roomType);
     }
 

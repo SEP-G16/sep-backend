@@ -4,6 +4,7 @@ import com.devx.booking_service.dto.BookingDto;
 import com.devx.booking_service.dto.RoomDto;
 import com.devx.booking_service.dto.RoomTypeDto;
 import com.devx.booking_service.dto.TempBookingDto;
+import com.devx.booking_service.dto.request.AddRoomTypeRequestBody;
 import com.devx.booking_service.exception.NoRoomsSelectedException;
 import com.devx.booking_service.exception.NullFieldException;
 import com.devx.booking_service.exception.RoomCountMismatchException;
@@ -73,6 +74,20 @@ public class AppUtils {
             RoomType roomType = new RoomType();
             roomType.setId(roomTypeDto.getId());
             roomType.setType(roomTypeDto.getType());
+            return roomType;
+        }
+
+        public static RoomType convertAddRoomTypeReqBodyToEntity(AddRoomTypeRequestBody requestBody)
+        {
+            RoomType roomType = new RoomType();
+            roomType.setId(requestBody.getId());
+            roomType.setType(requestBody.getType());
+            roomType.setPrice(requestBody.getPrice());
+            roomType.setDescription(requestBody.getDescription());
+            roomType.setKeywords(requestBody.getKeywords());
+            roomType.setBedCount(requestBody.getBedCount());
+            roomType.setFloorArea(requestBody.getFloorArea());
+            roomType.setMaximumOccupancy(requestBody.getMaximumOccupancy());
             return roomType;
         }
     }

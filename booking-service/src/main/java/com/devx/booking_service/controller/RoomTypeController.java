@@ -1,6 +1,7 @@
 package com.devx.booking_service.controller;
 
 import com.devx.booking_service.dto.RoomTypeDto;
+import com.devx.booking_service.dto.request.AddRoomTypeRequestBody;
 import com.devx.booking_service.exception.NullFieldException;
 import com.devx.booking_service.model.RoomType;
 import com.devx.booking_service.record.RoomCountByRoomType;
@@ -28,7 +29,7 @@ public class RoomTypeController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Mono<RoomTypeDto>> addRoomType(@RequestBody RoomTypeDto roomTypeDto) {
+    public ResponseEntity<Mono<RoomTypeDto>> addRoomType(@RequestBody AddRoomTypeRequestBody roomTypeDto) {
         try {
             return ResponseEntity.created(null).body(roomTypeService.addRoomType(roomTypeDto));
         }

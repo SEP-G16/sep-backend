@@ -34,7 +34,7 @@ public class Booking {
     private int childrenCount;
     private int roomCount;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Room> roomList;
 
     @JsonFormat(pattern="yyyy-MM-dd")
