@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -20,7 +21,7 @@ public class Booking {
     private Long id;
 
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
     private String customerName;
     private String email;
     private String phoneNo;
@@ -31,7 +32,7 @@ public class Booking {
     private int childrenCount;
     private int roomCount;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     private List<Room> roomList;
 
     @JsonFormat(pattern="yyyy-MM-dd")
