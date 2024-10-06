@@ -20,6 +20,8 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -83,7 +85,8 @@ public class BookingServiceIntegration {
     }
 
     private List<Booking> getAllBookingsInternal() {
-        return bookingRepository.findAll();
+        ZoneId zoneId = ZoneId.of("Asia/Kolkata");
+        return bookingRepository.findBookingsByCheckoutDateAfter(LocalDate.now(zoneId));
     }
 
     public Flux<BookingDto> getAllBookings() {

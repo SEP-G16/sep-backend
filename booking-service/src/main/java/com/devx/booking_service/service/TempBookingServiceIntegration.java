@@ -15,6 +15,8 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 
@@ -57,7 +59,8 @@ public class TempBookingServiceIntegration {
     }
 
     private List<TempBooking> getAllReservationsInternal() {
-        return tempBookingRepository.findAll();
+        ZoneId zoneId = ZoneId.of("Asia/Kolkata");
+        return tempBookingRepository.findTempBookingsByCheckinDateAfter(LocalDate.now(zoneId));
     }
 
     public Flux<TempBookingDto> getAllReservations() {
