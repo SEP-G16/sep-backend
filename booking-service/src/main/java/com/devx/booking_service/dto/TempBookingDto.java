@@ -1,6 +1,7 @@
 package com.devx.booking_service.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -31,6 +32,7 @@ public class TempBookingDto {
     @JsonFormat(pattern="yyyy-MM-dd")
     private LocalDate checkoutDate;
 
+    @JsonIgnore
     public boolean hasNullFields()
     {
         return customerName == null || email == null || phoneNo == null || roomType == null || adultCount == 0 || roomCount == 0 || checkinDate == null || checkoutDate == null;
