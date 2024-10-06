@@ -67,7 +67,7 @@ public class BookingServiceIntegration {
 
         for (Room room : booking.getRoomList()) {
             Room existingRoom = findRoom(room);
-            if (!existingRoom.getRoomType().equals(roomType)) {
+            if (!existingRoom.getRoomType().getId().equals(roomType.getId()) || !existingRoom.getRoomType().getType().equals(roomType.getType())) {
                 throw new RoomTypeMismatchException("Selected rooms and room type mismatches for room " + existingRoom.getRoomNo());
             }
             existingRooms.add(existingRoom);
