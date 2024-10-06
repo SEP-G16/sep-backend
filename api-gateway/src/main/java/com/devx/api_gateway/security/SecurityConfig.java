@@ -36,6 +36,7 @@ class SecurityConfig {
                 .authorizeExchange(exchanges -> exchanges
                         .matchers(ServerWebExchangeMatchers.pathMatchers("/api/auth/**")).permitAll()
                         .matchers(ServerWebExchangeMatchers.pathMatchers("/api/review/add")).permitAll()
+                        .matchers(ServerWebExchangeMatchers.pathMatchers("/api/review/all")).permitAll()
                         .matchers(ServerWebExchangeMatchers.pathMatchers("/api/booking/temp/add")).permitAll()
                         .matchers(ServerWebExchangeMatchers.pathMatchers("/api/menu/all")).permitAll()
                         .matchers(ServerWebExchangeMatchers.pathMatchers("/api/order/add")).permitAll()
