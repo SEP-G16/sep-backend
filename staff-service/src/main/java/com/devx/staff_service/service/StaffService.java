@@ -30,7 +30,7 @@ public class StaffService {
     }
 
     public Mono<StaffDto> addStaff(StaffDto staffDto) {
-        Staff staff = AppUtils.convertStaffDtoToStaff(staffDto);
+        Staff staff = AppUtils.StaffUtils.convertStaffDtoToStaff(staffDto);
         return staffServiceIntegration.addStaff(staff);
     }
 
@@ -39,7 +39,7 @@ public class StaffService {
     }
 
     public Mono<StaffDto> updateStaff(StaffDto updatedStaffDto) {
-        Staff updatedStaff = AppUtils.convertStaffDtoToStaff(updatedStaffDto);
+        Staff updatedStaff = AppUtils.StaffUtils.convertStaffDtoToStaff(updatedStaffDto);
         if(updatedStaff.getId() == null) {
             throw new NullFieldException("Staff ID is required for updating staff");
         }
