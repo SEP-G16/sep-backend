@@ -37,13 +37,11 @@ public class StaffServiceIntegrationTests extends BaseIntegrationTestConfigurati
     private StaffDto testStaffDto1;
     private StaffDto testStaffDto2;
 
+    private RoleDto roleDto1;
+    private RoleDto roleDto2;
+
     @BeforeEach
     void setUp() {
-        // Initialize test data for staff
-
-        RoleDto roleDto1;
-        RoleDto roleDto2;
-
         staffRepository.deleteAll();
         roleRepository.deleteAll();
 
@@ -90,6 +88,24 @@ public class StaffServiceIntegrationTests extends BaseIntegrationTestConfigurati
                     assert savedStaff.getGender().equals(testStaffDto1.getGender());
                     assert savedStaff.getDateOfBirth().equals(testStaffDto1.getDateOfBirth());
                     assert savedStaff.getAddress().equals(testStaffDto1.getAddress());
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    void testAddStaffWithSameRole()
+    {
+        StaffDto updatedTestStaffDto2 = testStaffDto2;
+        updatedTestStaffDto2.setRole(roleDto1);
+
+        Mono<StaffDto> savedStaffPublisher1 = staffService.addStaff(testStaffDto1);
+        savedStaffPublisher1.block();
+
+        Mono<StaffDto> savedStaffPublisher2 = staffService.addStaff(updatedTestStaffDto2);
+        StepVerifier.create(savedStaffPublisher2)
+                .assertNext(savedStaff -> {
+                    assert savedStaff.getId() != null;
+                    assert savedStaff.getRole().getId().equals(roleDto1.getId());
                 })
                 .verifyComplete();
     }

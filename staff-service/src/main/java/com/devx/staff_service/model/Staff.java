@@ -24,7 +24,7 @@ public class Staff {
     private Long id;
     private String name;
 
-    @OneToOne
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     private Role role;
 
     @Enumerated(EnumType.STRING)
