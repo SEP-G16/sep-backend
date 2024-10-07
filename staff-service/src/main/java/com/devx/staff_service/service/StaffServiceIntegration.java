@@ -1,8 +1,11 @@
 package com.devx.staff_service.service;
 
 import com.devx.staff_service.dto.StaffDto;
+import com.devx.staff_service.exception.RoleNotFoundException;
 import com.devx.staff_service.exception.StaffMemberNotFoundException;
+import com.devx.staff_service.model.Role;
 import com.devx.staff_service.model.Staff;
+import com.devx.staff_service.repository.RoleRepository;
 import com.devx.staff_service.repository.StaffRepository;
 import com.devx.staff_service.utils.AppUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +15,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
 
+import javax.management.relation.RoleInfoNotFoundException;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,14 +24,29 @@ public class StaffServiceIntegration {
 
     private final Scheduler jdbcScheduler;
     private final StaffRepository staffRepository;
+    private final RoleRepository roleRepository;
 
     @Autowired
-    public StaffServiceIntegration(@Qualifier("jdbcScheduler") Scheduler jdbcScheduler, StaffRepository staffRepository) {
+    public StaffServiceIntegration(@Qualifier("jdbcScheduler") Scheduler jdbcScheduler, StaffRepository staffRepository, RoleRepository roleRepository) {
         this.jdbcScheduler = jdbcScheduler;
         this.staffRepository = staffRepository;
+        this.roleRepository = roleRepository;
+    }
+
+    private Role findRole(Role role)
+    {
+        if(role.getId() != null)
+        {
+            return roleRepository.findById(role.getId()).orElseThrow(RoleNotFoundException::new);
+        }
+        else {
+            return roleRepository.findByName(role.getName()).orElseThrow(RoleNotFoundException::new);
+        }
     }
 
     private Staff addStaffInternal(Staff staff) {
+        Role role = findRole(staff.getRole());
+        staff.setRole(role);
         return staffRepository.save(staff);
     }
 
@@ -36,6 +55,8 @@ public class StaffServiceIntegration {
     }
 
     private Staff updateStaffInternal(Staff updatedStaff) {
+        Role role = findRole(updatedStaff.getRole());
+        updatedStaff.setRole(role);
         return staffRepository.updateOrInsert(updatedStaff);
     }
 
