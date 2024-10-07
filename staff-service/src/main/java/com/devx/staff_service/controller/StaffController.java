@@ -15,7 +15,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RestController
-@RequestMapping("/api/staff")
+@RequestMapping("/staff")
 public class StaffController {
 
     private final StaffService staffService;
@@ -30,8 +30,16 @@ public class StaffController {
     @PostMapping("/add")
     public ResponseEntity<Mono<StaffDto>> addStaff(@RequestBody StaffDto staffDto) {
         try{
+            if(staffDto.hasNullFields())
+            {
+                throw new NullFieldException("Staff fields cannot be null");
+            }
+            if(staffDto.invalidFrom())
+            {
+                throw new BadRequestException("Invalid form data");
+            }
             return ResponseEntity.created(null).body(staffService.addStaff(staffDto));
-        }catch (NullFieldException e){
+        }catch (BadRequestException | NullFieldException e){
             return ResponseEntity.badRequest().body(Mono.error(e));
         } catch (Exception e){
             LOG.error("Error occurred while adding staff: ", e);
@@ -52,6 +60,14 @@ public class StaffController {
     @PutMapping("/update")
     public ResponseEntity<Mono<StaffDto>> updateStaff(@RequestBody StaffDto updatedStaffDto) {
         try{
+            if(updatedStaffDto.hasNullFields())
+            {
+                throw new NullFieldException("Staff fields cannot be null");
+            }
+            if(updatedStaffDto.invalidFrom())
+            {
+                throw new BadRequestException("Invalid form data");
+            }
             return ResponseEntity.ok().body(staffService.updateStaff(updatedStaffDto));
         }catch (NullFieldException e){
             return ResponseEntity.badRequest().body(Mono.error(e));
