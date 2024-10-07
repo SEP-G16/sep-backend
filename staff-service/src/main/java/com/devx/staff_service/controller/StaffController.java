@@ -3,6 +3,7 @@ package com.devx.staff_service.controller;
 import com.devx.staff_service.dto.StaffDto;
 import com.devx.staff_service.exception.BadRequestException;
 import com.devx.staff_service.exception.NullFieldException;
+import com.devx.staff_service.exception.RoleNotFoundException;
 import com.devx.staff_service.exception.StaffMemberNotFoundException;
 import com.devx.staff_service.model.Staff;
 import com.devx.staff_service.service.StaffService;
@@ -39,7 +40,7 @@ public class StaffController {
                 throw new BadRequestException("Invalid form data");
             }
             return ResponseEntity.created(null).body(staffService.addStaff(staffDto));
-        }catch (BadRequestException | NullFieldException e){
+        }catch (BadRequestException | NullFieldException | RoleNotFoundException e){
             return ResponseEntity.badRequest().body(Mono.error(e));
         } catch (Exception e){
             LOG.error("Error occurred while adding staff: ", e);
@@ -69,7 +70,7 @@ public class StaffController {
                 throw new BadRequestException("Invalid form data");
             }
             return ResponseEntity.ok().body(staffService.updateStaff(updatedStaffDto));
-        }catch (NullFieldException e){
+        }catch (BadRequestException | NullFieldException | RoleNotFoundException e){
             return ResponseEntity.badRequest().body(Mono.error(e));
         } catch (Exception e){
             LOG.error("Error occurred while updating staff: ", e);
