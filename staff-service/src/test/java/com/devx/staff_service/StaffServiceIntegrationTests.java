@@ -1,14 +1,22 @@
 package com.devx.staff_service;
 
+import com.devx.staff_service.dto.RoleDto;
+import com.devx.staff_service.dto.StaffDto;
+import com.devx.staff_service.enums.Gender;
+import com.devx.staff_service.model.Role;
 import com.devx.staff_service.model.Staff;
+import com.devx.staff_service.repository.RoleRepository;
 import com.devx.staff_service.repository.StaffRepository;
 import com.devx.staff_service.service.StaffService;
+import com.devx.staff_service.utils.AppUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
 
 import java.time.LocalDate;
 import java.util.Objects;
@@ -17,96 +25,118 @@ public class StaffServiceIntegrationTests extends BaseIntegrationTestConfigurati
 
     private final StaffRepository staffRepository;
     private final StaffService staffService;
+    private final RoleRepository roleRepository;
 
     @Autowired
-    public StaffServiceIntegrationTests(StaffRepository staffRepository, StaffService staffService) {
+    public StaffServiceIntegrationTests(StaffRepository staffRepository, StaffService staffService, RoleRepository roleRepository) {
         this.staffRepository = staffRepository;
         this.staffService = staffService;
+        this.roleRepository = roleRepository;
     }
 
-    private Staff testStaff1;
-    private Staff testStaff2;
+    private StaffDto testStaffDto1;
+    private StaffDto testStaffDto2;
 
     @BeforeEach
     void setUp() {
         // Initialize test data for staff
-        testStaff1 = new Staff();
-        testStaff1.setName("John Doe");
-        testStaff1.setRole("Manager");
-        testStaff1.setEmail("johndoe@example.com");
-        testStaff1.setPhoneNumber("1234567890");
-        testStaff1.setGender("Male");
-        testStaff1.setDateOfBirth(LocalDate.of(1985, 5, 15));
-        testStaff1.setAddress("123 Main St, City, Country");
 
-        testStaff2 = new Staff();
-        testStaff2.setName("Jane Smith");
-        testStaff2.setRole("Waitress");
-        testStaff2.setEmail("janesmith@example.com");
-        testStaff2.setPhoneNumber("0987654321");
-        testStaff2.setGender("Female");
-        testStaff2.setDateOfBirth(LocalDate.of(1990, 7, 20));
-        testStaff2.setAddress("456 Another St, City, Country");
+        RoleDto roleDto1;
+        RoleDto roleDto2;
+
+        staffRepository.deleteAll();
+        roleRepository.deleteAll();
+
+        Role role1 = new Role();
+        role1.setName("Manager");
+
+        Role role2 = new Role();
+        role2.setName("Waitress");
+
+        roleRepository.save(role1);
+        roleRepository.save(role2);
+
+        roleDto1 = AppUtils.RoleUtils.convertRoleToRoleDto(role1);
+        roleDto2 = AppUtils.RoleUtils.convertRoleToRoleDto(role2);
+
+        testStaffDto1 = new StaffDto();
+        testStaffDto1.setName("John Doe");
+        testStaffDto1.setRole(roleDto1);
+        testStaffDto1.setEmail("johndoe@example.com");
+        testStaffDto1.setPhoneNumber("1234567890");
+        testStaffDto1.setGender(Gender.Male);
+        testStaffDto1.setDateOfBirth(LocalDate.of(1985, 5, 15));
+        testStaffDto1.setAddress("123 Main St, City, Country");
+
+        testStaffDto2 = new StaffDto();
+        testStaffDto2.setName("Jane Smith");
+        testStaffDto2.setRole(roleDto2);
+        testStaffDto2.setEmail("janesmith@example.com");
+        testStaffDto2.setPhoneNumber("0987654321");
+        testStaffDto2.setGender(Gender.Female);
+        testStaffDto2.setDateOfBirth(LocalDate.of(1990, 7, 20));
+        testStaffDto2.setAddress("456 Another St, City, Country");
     }
 
     @Test
     void testAddStaff() {
-        Staff savedStaff1 = staffRepository.save(testStaff1);
-        Staff savedStaff2 = staffRepository.save(testStaff2);
-
-        assert savedStaff1.getId() != null;
-        assert savedStaff2.getId() != null;
-
-        assert savedStaff1.getName().equals(testStaff1.getName());
-        assert savedStaff1.getRole().equals(testStaff1.getRole());
-        assert savedStaff1.getEmail().equals(testStaff1.getEmail());
-        assert savedStaff1.getPhoneNumber().equals(testStaff1.getPhoneNumber());
-        assert savedStaff1.getGender().equals(testStaff1.getGender());
-        assert savedStaff1.getDateOfBirth().equals(testStaff1.getDateOfBirth());
-        assert savedStaff1.getAddress().equals(testStaff1.getAddress());
-
-        assert savedStaff2.getName().equals(testStaff2.getName());
-        assert savedStaff2.getRole().equals(testStaff2.getRole());
-        assert savedStaff2.getEmail().equals(testStaff2.getEmail());
-        assert savedStaff2.getPhoneNumber().equals(testStaff2.getPhoneNumber());
-        assert savedStaff2.getGender().equals(testStaff2.getGender());
-        assert savedStaff2.getDateOfBirth().equals(testStaff2.getDateOfBirth());
-        assert savedStaff2.getAddress().equals(testStaff2.getAddress());
+        Mono<StaffDto> savedStaffPublisher = staffService.addStaff(testStaffDto1);
+        StepVerifier.create(savedStaffPublisher)
+                .assertNext(savedStaff -> {
+                    assert savedStaff.getId() != null;
+                    assert savedStaff.getName().equals(testStaffDto1.getName());
+                    assert savedStaff.getEmail().equals(testStaffDto1.getEmail());
+                    assert savedStaff.getPhoneNumber().equals(testStaffDto1.getPhoneNumber());
+                    assert savedStaff.getGender().equals(testStaffDto1.getGender());
+                    assert savedStaff.getDateOfBirth().equals(testStaffDto1.getDateOfBirth());
+                    assert savedStaff.getAddress().equals(testStaffDto1.getAddress());
+                })
+                .verifyComplete();
     }
 
     @Test
     void testUpdateStaff() {
-        Staff savedStaff = staffRepository.save(testStaff1);
+        Mono<StaffDto> savedStaffPublisher = staffService.addStaff(testStaffDto2);
+        StaffDto savedStaff = savedStaffPublisher.block();
 
-        // Update details
-        savedStaff.setName("John Updated");
-        savedStaff.setPhoneNumber("9876543210");
+        assert savedStaff != null;
+        savedStaff.setName("Jane Doe");
 
-        Staff updatedStaff = staffRepository.save(savedStaff);
-
-        assert updatedStaff != null;
-        assert updatedStaff.getId().equals(savedStaff.getId());
-        assert updatedStaff.getName().equals("John Updated");
-        assert updatedStaff.getPhoneNumber().equals("9876543210");
+        Mono<StaffDto> updatedStaffPublisher = staffService.updateStaff(savedStaff);
+        StepVerifier.create(updatedStaffPublisher)
+                .assertNext(updatedStaff -> {
+                    assert updatedStaff.getId().equals(savedStaff.getId());
+                    assert updatedStaff.getName().equals("Jane Doe");
+                    assert updatedStaff.getEmail().equals(savedStaff.getEmail());
+                    assert updatedStaff.getPhoneNumber().equals(savedStaff.getPhoneNumber());
+                    assert updatedStaff.getGender().equals(savedStaff.getGender());
+                    assert updatedStaff.getDateOfBirth().equals(savedStaff.getDateOfBirth());
+                    assert updatedStaff.getAddress().equals(savedStaff.getAddress());
+                })
+                .verifyComplete();
     }
 
     @Test
     void testRemoveStaff() {
-        Staff savedStaff = staffRepository.save(testStaff1);
 
-        staffRepository.deleteById(savedStaff.getId());
+        Mono<StaffDto> savedStaff1Publisher = staffService.addStaff(testStaffDto1);
+        StaffDto saved1 = savedStaff1Publisher.block();
 
-        Staff deletedStaff = staffRepository.findById(savedStaff.getId()).orElse(null);
-        assert deletedStaff == null;
+        Mono<StaffDto> savedStaff2Publisher = staffService.addStaff(testStaffDto2);
+        savedStaff2Publisher.block();
+
+        Flux<StaffDto> allStaffPublisher = staffService.getAllStaff();
+        StepVerifier.create(allStaffPublisher)
+                .expectNextCount(2)
+                .verifyComplete();
+
+        assert saved1 != null;
+        Mono<Void> deleteStaffPublisher = staffService.deleteStaff(saved1.getId());
+        deleteStaffPublisher.block();
+
+        Flux<StaffDto> afterDeleteAllStaffPublisher = staffService.getAllStaff();
+        StepVerifier.create(afterDeleteAllStaffPublisher)
+                .expectNextCount(1)
+                .verifyComplete();
     }
-
-    @Test
-    void testDeleteStaffSuccess() {
-        // Assuming staff with ID 1 exists
-        Long validStaffId = 1L;
-
-        Mono<Void> response = staffService.deleteStaff(validStaffId);
-
-    }
-
 }
