@@ -30,6 +30,14 @@ public class RoleDto {
     public boolean invalidForm() {
         String idPattern = "^[0-9]+$";
         String namePattern = "^[\\p{L} .'-]+$";
-        return id == null || !id.toString().matches(idPattern) || name == null || !name.matches(namePattern);
+        if(id != null)
+        {
+            return !id.toString().matches(idPattern);
+        }
+        if(name != null)
+        {
+            return !name.matches(namePattern);
+        }
+        return false;
     }
 }
