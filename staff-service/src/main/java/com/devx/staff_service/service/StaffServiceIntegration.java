@@ -32,7 +32,7 @@ public class StaffServiceIntegration {
     }
 
     public Mono<StaffDto> addStaff(Staff staff) {
-        return Mono.fromCallable(() -> addStaffInternal(staff)).subscribeOn(jdbcScheduler).map(AppUtils::convertStaffToStaffDto);
+        return Mono.fromCallable(() -> addStaffInternal(staff)).subscribeOn(jdbcScheduler).map(AppUtils.StaffUtils::convertStaffToStaffDto);
     }
 
     private Staff updateStaffInternal(Staff updatedStaff) {
@@ -42,7 +42,7 @@ public class StaffServiceIntegration {
     public Mono<StaffDto> updateStaff(Staff updatedStaff) {
         return Mono.fromCallable(() -> {
             Staff updatedEntity = updateStaffInternal(updatedStaff);
-            return AppUtils.convertStaffToStaffDto(updatedEntity);
+            return AppUtils.StaffUtils.convertStaffToStaffDto(updatedEntity);
         }).subscribeOn(jdbcScheduler);
     }
 
@@ -68,6 +68,6 @@ public class StaffServiceIntegration {
     }
 
     public Flux<StaffDto> getAllStaff() {
-        return Mono.fromCallable(() -> getAllStaffInternal().stream().map(AppUtils::convertStaffToStaffDto).toList()).subscribeOn(jdbcScheduler).flatMapMany(Flux::fromIterable);
+        return Mono.fromCallable(() -> getAllStaffInternal().stream().map(AppUtils.StaffUtils::convertStaffToStaffDto).toList()).subscribeOn(jdbcScheduler).flatMapMany(Flux::fromIterable);
     }
 }
