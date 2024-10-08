@@ -16,8 +16,13 @@ public class MessageReceiver {
 
     public static Logger LOG = LoggerFactory.getLogger(MessageReceiver.class);
 
-    @Autowired
+
     private EmailService emailService;
+
+    @Autowired
+    public MessageReceiver(EmailService emailService) {
+        this.emailService = emailService;
+    }
 
     @RabbitListener(queues = "#{sendTicketResponseQueue.name}")
     public void sendTicketResponseMessageHandler(EmailDetails details) throws InterruptedException {

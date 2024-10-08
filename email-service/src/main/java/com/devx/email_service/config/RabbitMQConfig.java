@@ -1,6 +1,7 @@
 package com.devx.email_service.config;
 
 import com.devx.email_service.message.MessageReceiver;
+import com.devx.email_service.service.EmailService;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
@@ -58,8 +59,8 @@ public class RabbitMQConfig {
         }
 
         @Bean
-        public MessageReceiver receiver() {
-            return new MessageReceiver();
+        public MessageReceiver receiver(EmailService emailService) {
+            return new MessageReceiver(emailService);
         }
     }
 

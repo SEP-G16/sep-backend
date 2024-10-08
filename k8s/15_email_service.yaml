@@ -36,12 +36,12 @@ spec:
             configMapKeyRef:
               name: hrmis-config-map
               key: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
-        - name: GMAIL
+        - name: SPRING_MAIL_USERNAME
           valueFrom: 
             secretKeyRef:
               name: email-creds
               key: username
-        - name: GMAIL_APP_PASSWORD
+        - name: SPRING_MAIL_PASSWORD
           valueFrom: 
             secretKeyRef:
               name: email-creds
