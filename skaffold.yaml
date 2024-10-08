@@ -1,4 +1,4 @@
-apiVersion: skaffold/v4beta9
+apiVersion: skaffold/v4beta11 latest
 kind: Config
 build:
   tagPolicy:
@@ -6,10 +6,13 @@ build:
   local: {}
 manifests:
   rawYaml:
-    - https://github.com/rabbitmq/cluster-operator/releases/latest/download/cluster-operator.yml
     - ./k8s/*
   
 deploy:
-  kubectl: {}
+  kubectl:
+    hooks:
+      before:
+        - host:
+            command: ["kubectl", "apply", "-f", "https://github.com/rabbitmq/cluster-operator/releases/latest/download/cluster-operator.yml"]
   logs:
     prefix: container
