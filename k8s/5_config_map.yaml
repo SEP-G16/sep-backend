@@ -9,6 +9,11 @@ data:
   CONFIG_SERVER_GIT_ACCESS_TOKEN: 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
   SPRING_CONFIG_IMPORT: "configserver:http://config-server-0.config-server:8888/"
   EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "http://eureka-0.eureka:8761/eureka/"
+  
+  SPRING_RABBITMQ_HOST: "http://production-rabbitmqcluster-server-0:5672/"
+  SPRING_RABBITMQ_USERNAME: guest
+  SPRING_RABBITMQ_PASSWORD: guest
+  
   EUREKA_HOSTNAME: "eureka-0"
   CONFIGSERVER_APPLICATION_NAME: config-server
   EUREKA_APPLICATION_NAME: eureka-server
