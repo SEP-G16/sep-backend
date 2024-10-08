@@ -1,31 +1,31 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: staff-service-deployment
+  name: api-gateway-deployment
   labels:
-    app: staff-service
+    app: api-gateway
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: staff-service
+      app: api-gateway
   template:
     metadata:
       labels:
-        app: staff-service
+        app: api-gateway
     spec:
       containers:
-      - name: staff-service
-        image: us-central1-docker.pkg.dev/sound-bee-428509-q1/hrmis-artifact-registry/staff-service
-        imagePullPolicy: Always
+      - name: api-gateway
+        image: us-central1-docker.pkg.dev/stone-album-437618-f8/hrmis-artifact-registry/api-gateway
+        imagePullPolicy: Always 
         ports:
-        - containerPort: 8086
+        - containerPort: 8060
         env:
         - name: SPRING_APPLICATION_NAME
           valueFrom:
             configMapKeyRef:
               name: hrmis-config-map
-              key: STAFF_SERVICE_APPLICATION_NAME
+              key: API_GATEWAY_APPLICATION_NAME
         - name: SPRING_CONFIG_IMPORT
           valueFrom: 
             configMapKeyRef:
@@ -36,15 +36,26 @@ spec:
             configMapKeyRef:
               name: hrmis-config-map
               key: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
+        - name: JWT_SECRET_KEY
+          valueFrom: 
+            secretKeyRef:
+              name: jwt-creds
+              key: key
+        - name: JWT_TOKEN_EXPIRATION_SECONDS
+          valueFrom: 
+            configMapKeyRef:
+              name: hrmis-config-map
+              key: JWT_TOKEN_EXPIRATION_SECONDS
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: staff-service
+  name: api-gateway
 spec:
   selector:
-    app: staff-service
+    app: api-gateway
+  type: LoadBalancer
   ports:
     - protocol: TCP
       port: 80
-      targetPort: 8086
+      targetPort: 8060

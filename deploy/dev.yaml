@@ -6,4 +6,4 @@ metadata:
   labels: {}
 description: dev
 gke:
-  cluster: projects/sound-bee-428509-q1/locations/us-central1-c/clusters/hrmis-cluster-1
+  cluster: projects/stone-album-437618-f8/locations/us-central1-c/clusters/hrmis-cluster-1

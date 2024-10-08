@@ -8,11 +8,11 @@ steps:
   id: 'Package Config Server'
 
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'us-central1-docker.pkg.dev/sound-bee-428509-q1/hrmis-artifact-registry/config-server', './config-server' ]
+  args: ['build', '-t', 'us-central1-docker.pkg.dev/stone-album-437618-f8/hrmis-artifact-registry/config-server', './config-server' ]
   id: 'Build Config Server Docker Image'
 
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'us-central1-docker.pkg.dev/sound-bee-428509-q1/hrmis-artifact-registry/config-server' ]
+  args: ['push', 'us-central1-docker.pkg.dev/stone-album-437618-f8/hrmis-artifact-registry/config-server' ]
   id: 'Push Config Server Docker Image'
   
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -23,11 +23,11 @@ steps:
   id: 'Package Eureka Server'
 
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'us-central1-docker.pkg.dev/sound-bee-428509-q1/hrmis-artifact-registry/eureka-server', './eureka-server' ]
+  args: ['build', '-t', 'us-central1-docker.pkg.dev/stone-album-437618-f8/hrmis-artifact-registry/eureka-server', './eureka-server' ]
   id: 'Build Eureka Server Docker Image'
 
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'us-central1-docker.pkg.dev/sound-bee-428509-q1/hrmis-artifact-registry/eureka-server' ]
+  args: ['push', 'us-central1-docker.pkg.dev/stone-album-437618-f8/hrmis-artifact-registry/eureka-server' ]
   id: 'Push Eureka Server Docker Image'
   
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -38,11 +38,11 @@ steps:
   id: 'Package Booking Service'
 
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'us-central1-docker.pkg.dev/sound-bee-428509-q1/hrmis-artifact-registry/booking-service', './booking-service' ]
+  args: ['build', '-t', 'us-central1-docker.pkg.dev/stone-album-437618-f8/hrmis-artifact-registry/booking-service', './booking-service' ]
   id: 'Build Booking Service Docker Image'
 
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'us-central1-docker.pkg.dev/sound-bee-428509-q1/hrmis-artifact-registry/booking-service' ]
+  args: ['push', 'us-central1-docker.pkg.dev/stone-album-437618-f8/hrmis-artifact-registry/booking-service' ]
   id: 'Push Booking Service Docker Image'
   
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -53,11 +53,11 @@ steps:
   id: 'Package Menu Service'
 
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'us-central1-docker.pkg.dev/sound-bee-428509-q1/hrmis-artifact-registry/menu-service', './menu-service' ]
+  args: ['build', '-t', 'us-central1-docker.pkg.dev/stone-album-437618-f8/hrmis-artifact-registry/menu-service', './menu-service' ]
   id: 'Build Menu Service Docker Image'
 
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'us-central1-docker.pkg.dev/sound-bee-428509-q1/hrmis-artifact-registry/menu-service' ]
+  args: ['push', 'us-central1-docker.pkg.dev/stone-album-437618-f8/hrmis-artifact-registry/menu-service' ]
   id: 'Push Menu Service Docker Image'
   
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -68,11 +68,11 @@ steps:
   id: 'Package Order Service'
 
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'us-central1-docker.pkg.dev/sound-bee-428509-q1/hrmis-artifact-registry/order-service', './order-service' ]
+  args: ['build', '-t', 'us-central1-docker.pkg.dev/stone-album-437618-f8/hrmis-artifact-registry/order-service', './order-service' ]
   id: 'Build Order Service Docker Image'
 
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'us-central1-docker.pkg.dev/sound-bee-428509-q1/hrmis-artifact-registry/order-service' ]
+  args: ['push', 'us-central1-docker.pkg.dev/stone-album-437618-f8/hrmis-artifact-registry/order-service' ]
   id: 'Push Order Service Docker Image'
   
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -83,11 +83,11 @@ steps:
   id: 'Package Review Service'
 
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'us-central1-docker.pkg.dev/sound-bee-428509-q1/hrmis-artifact-registry/review-service', './review-service' ]
+  args: ['build', '-t', 'us-central1-docker.pkg.dev/stone-album-437618-f8/hrmis-artifact-registry/review-service', './review-service' ]
   id: 'Build Review Service Docker Image'
 
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'us-central1-docker.pkg.dev/sound-bee-428509-q1/hrmis-artifact-registry/review-service' ]
+  args: ['push', 'us-central1-docker.pkg.dev/stone-album-437618-f8/hrmis-artifact-registry/review-service' ]
   id: 'Push Review Service Docker Image'
   
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -98,11 +98,11 @@ steps:
   id: 'Package Staff Service'
 
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'us-central1-docker.pkg.dev/sound-bee-428509-q1/hrmis-artifact-registry/staff-service', './staff-service' ]
+  args: ['build', '-t', 'us-central1-docker.pkg.dev/stone-album-437618-f8/hrmis-artifact-registry/staff-service', './staff-service' ]
   id: 'Build Staff Service Docker Image'
 
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'us-central1-docker.pkg.dev/sound-bee-428509-q1/hrmis-artifact-registry/staff-service' ]
+  args: ['push', 'us-central1-docker.pkg.dev/stone-album-437618-f8/hrmis-artifact-registry/staff-service' ]
   id: 'Push Staff Service Docker Image'
   
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -113,12 +113,27 @@ steps:
   id: 'Package Table Reservation Service'
 
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'us-central1-docker.pkg.dev/sound-bee-428509-q1/hrmis-artifact-registry/table-reservation-service', './table-reservation-service' ]
+  args: ['build', '-t', 'us-central1-docker.pkg.dev/stone-album-437618-f8/hrmis-artifact-registry/table-reservation-service', './table-reservation-service' ]
   id: 'Build Table Reservation Service Docker Image'
 
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'us-central1-docker.pkg.dev/sound-bee-428509-q1/hrmis-artifact-registry/table-reservation-service' ]
+  args: ['push', 'us-central1-docker.pkg.dev/stone-album-437618-f8/hrmis-artifact-registry/table-reservation-service' ]
   id: 'Push Table Reservation Service Docker Image'
+  
+# ----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+- name: 'gcr.io/cloud-builders/mvn'
+  dir: 'auth-service'
+  args: ['package', '-DskipTests']
+  id: 'Package Auth Service'
+
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'us-central1-docker.pkg.dev/stone-album-437618-f8/hrmis-artifact-registry/auth-service', './auth-service' ]
+  id: 'Build API Gateway Docker Image'
+
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'us-central1-docker.pkg.dev/stone-album-437618-f8/hrmis-artifact-registry/auth-service' ]
+  id: 'Push API Gateway Docker Image'
   
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -128,11 +143,11 @@ steps:
   id: 'Package API Gateway'
 
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'us-central1-docker.pkg.dev/sound-bee-428509-q1/hrmis-artifact-registry/api-gateway', './api-gateway' ]
+  args: ['build', '-t', 'us-central1-docker.pkg.dev/stone-album-437618-f8/hrmis-artifact-registry/api-gateway', './api-gateway' ]
   id: 'Build API Gateway Docker Image'
 
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'us-central1-docker.pkg.dev/sound-bee-428509-q1/hrmis-artifact-registry/api-gateway' ]
+  args: ['push', 'us-central1-docker.pkg.dev/stone-album-437618-f8/hrmis-artifact-registry/api-gateway' ]
   id: 'Push API Gateway Docker Image'
   
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------------
