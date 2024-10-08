@@ -19,7 +19,7 @@ public class MenuServiceApplication {
     }
 
     @Autowired
-    public MenuServiceApplication(@Value("${app.threadPoolSize:10}") Integer threadPoolSize, @Value("${app.taskQueueSize:100}") Integer taskQueueSize) {
+    public MenuServiceApplication(@Value("${app.threadPoolSize:5}") Integer threadPoolSize, @Value("${app.taskQueueSize:50}") Integer taskQueueSize) {
         this.threadPoolSize = threadPoolSize;
         this.taskQueueSize = taskQueueSize;
     }

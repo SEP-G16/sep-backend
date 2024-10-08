@@ -42,3 +42,19 @@ eureka:
     leaseExpirationDurationInSeconds: 5
 
 ---
+
+spring:
+  config:
+    activate:
+      on-profile: dev-dis-eureka
+    import: "optional:configserver:http://localhost:8067/"
+  application:
+    name: staff-service
+
+server:
+  port: 8086
+
+eureka:
+  client:
+    enabled: false
+---

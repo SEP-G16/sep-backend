@@ -20,8 +20,8 @@ public class ContactServiceApplication {
 
 	@Autowired
 	public ContactServiceApplication(
-			@Value("${app.threadPoolSize:3}") Integer threadPoolSize,
-			@Value("${app.taskQueueSize:20}") Integer taskQueueSize
+			@Value("${app.threadPoolSize:5}") Integer threadPoolSize,
+			@Value("${app.taskQueueSize:50}") Integer taskQueueSize
 	) {
 		this.threadPoolSize = threadPoolSize;
 		this.taskQueueSize = taskQueueSize;
