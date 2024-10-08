@@ -6,7 +6,9 @@ build:
   local: {}
 manifests:
   rawYaml:
+    - https://github.com/rabbitmq/cluster-operator/releases/latest/download/cluster-operator.yml
     - ./k8s/*
+  
 deploy:
   kubectl: {}
   logs:
