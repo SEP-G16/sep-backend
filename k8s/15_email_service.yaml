@@ -43,7 +43,7 @@ spec:
               key: username
         - name: GMAIL_APP_PASSWORD
           valueFrom: 
-            secretKeyRef::
+            secretKeyRef:
               name: email-creds
               key: password
 ---
