@@ -123,6 +123,36 @@ steps:
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 - name: 'gcr.io/cloud-builders/mvn'
+  dir: 'email-service'
+  args: ['package', '-DskipTests']
+  id: 'Package Email Service'
+
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'us-central1-docker.pkg.dev/stone-album-437618-f8/hrmis-artifact-registry/email-service', './email-service' ]
+  id: 'Build Email Service Docker Image'
+
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'us-central1-docker.pkg.dev/stone-album-437618-f8/hrmis-artifact-registry/email-service' ]
+  id: 'Push Email Service Docker Image'
+  
+# ----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+- name: 'gcr.io/cloud-builders/mvn'
+  dir: 'contact-service'
+  args: ['package', '-DskipTests']
+  id: 'Package Contact Service'
+
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'us-central1-docker.pkg.dev/stone-album-437618-f8/hrmis-artifact-registry/contact-service', './contact-service' ]
+  id: 'Build Contact Service Docker Image'
+
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'us-central1-docker.pkg.dev/stone-album-437618-f8/hrmis-artifact-registry/contact-service' ]
+  id: 'Push Contact Service Docker Image'
+  
+# ----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+- name: 'gcr.io/cloud-builders/mvn'
   dir: 'auth-service'
   args: ['package', '-DskipTests']
   id: 'Package Auth Service'
