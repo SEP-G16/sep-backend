@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: email-service-deployment
+  labels:
+    app: email-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: email-service
+  template:
+    metadata:
+      labels:
+        app: email-service
+    spec:
+      containers:
+      - name: email-service
+        image: us-central1-docker.pkg.dev/stone-album-437618-f8/hrmis-artifact-registry/email-service
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8079
+        env:
+        - name: SPRING_APPLICATION_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: hrmis-config-map
+              key: EMAIL_SERVICE_APPLICATION_NAME
+        - name: SPRING_CONFIG_IMPORT
+          valueFrom: 
+            configMapKeyRef:
+              name: hrmis-config-map
+              key: SPRING_CONFIG_IMPORT
+        - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
+          valueFrom: 
+            configMapKeyRef:
+              name: hrmis-config-map
+              key: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
+        - name: GMAIL
+          valueFrom: 
+            secretKeyRef:
+              name: email-creds
+              key: username
+        - name: GMAIL_APP_PASSWORD
+          valueFrom: 
+            secretKeyRef::
+              name: email-creds
+              key: password
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: email-service
+spec:
+  selector:
+    app: email-service
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8079

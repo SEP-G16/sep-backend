@@ -36,5 +36,9 @@ data:
   AUTH_SERVICE_APPLICATION_NAME: auth-service
   AUTH_SERVICE_DATASOURCE_URL: jdbc:mysql://hrmis-aiven-instance-hrmis.h.aivencloud.com:24695/auth_reservations_db?ssl-mode=REQUIRED
 
+  EMAIL_SERVICE_APPLICATION_NAME: email-service
+
+  CONTACT_SERVICE_APPLICATION_NAME: contact-service
+    
   API_GATEWAY_APPLICATION_NAME: api-gateway
 
