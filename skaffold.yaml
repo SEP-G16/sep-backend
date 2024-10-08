@@ -6,13 +6,10 @@ build:
   local: {}
 manifests:
   rawYaml:
+    - ./k8s/config/*
     - ./k8s/*
   
 deploy:
-  kubectl:
-    hooks:
-      before:
-        - host:
-            command: ["kubectl", "apply", "-f", "https://github.com/rabbitmq/cluster-operator/releases/latest/download/cluster-operator.yml"]
+  kubectl: {}
   logs:
     prefix: container

@@ -1,6 +1,12 @@
 steps:
 
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------------
+- name: 'gcr.io/gcp-runtimes/ubuntu_20_0_4'
+  entrypoint: 'curl'
+  dir: k8s/config
+  args: ['-LO', 'https://github.com/rabbitmq/cluster-operator/releases/latest/download/cluster-operator.yml']
+  
+# ----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 - name: 'gcr.io/cloud-builders/mvn'
   dir: 'config-server'
