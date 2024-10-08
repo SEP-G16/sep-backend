@@ -39,6 +39,13 @@ spring:
           filters:
             - RewritePath=/api/staff/(?<segment>.*), /staff/${segment}
 
+        - id: CONTACT-SERVICE
+          uri: lb://CONTACT-SERVICE
+          predicates:
+            - Path=/api/contact-us/**
+          filters:
+            - RewritePath=/api/contact-us/(?<segment>.*), /contact-us/${segment}
+
         - id: BOOKING-SERVICE
           uri: lb://BOOKING-SERVICE
           predicates:
