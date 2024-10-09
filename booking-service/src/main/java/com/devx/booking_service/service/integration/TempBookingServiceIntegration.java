@@ -1,7 +1,8 @@
-package com.devx.booking_service.service;
+package com.devx.booking_service.service.integration;
 import com.devx.booking_service.dto.TempBookingDto;
 import com.devx.booking_service.exception.RoomTypeNotFoundException;
 import com.devx.booking_service.exception.TempBookingNotFoundException;
+import com.devx.booking_service.message.MessageSender;
 import com.devx.booking_service.model.RoomType;
 import com.devx.booking_service.model.TempBooking;
 import com.devx.booking_service.repository.RoomTypeRepository;
@@ -26,12 +27,14 @@ public class TempBookingServiceIntegration {
     private final Scheduler jdbcScheduler;
     private final TempBookingRepository tempBookingRepository;
     private final RoomTypeRepository roomTypeRepository;
+    private final MessageSender messageSender;
 
     @Autowired
-    public TempBookingServiceIntegration(@Qualifier("jdbcScheduler") Scheduler jdbcScheduler, TempBookingRepository tempBookingRepository, RoomTypeRepository roomTypeRepository) {
+    public TempBookingServiceIntegration(@Qualifier("jdbcScheduler") Scheduler jdbcScheduler, TempBookingRepository tempBookingRepository, RoomTypeRepository roomTypeRepository, MessageSender messageSender) {
         this.jdbcScheduler = jdbcScheduler;
         this.tempBookingRepository = tempBookingRepository;
         this.roomTypeRepository = roomTypeRepository;
+        this.messageSender = messageSender;
     }
 
     private RoomType findRoomType(RoomType roomType)
@@ -74,6 +77,8 @@ public class TempBookingServiceIntegration {
     protected void removeReservationInternal(Long id) {
         Optional<TempBooking> existingTempBookingOptional = tempBookingRepository.findById(id);
         if (existingTempBookingOptional.isPresent()) {
+            TempBooking tempBooking = existingTempBookingOptional.get();
+            messageSender.sendBookingRejectedMessage(tempBooking);
             tempBookingRepository.deleteById(id);
         } else {
             throw new TempBookingNotFoundException("TempBooking " + id + " not found");

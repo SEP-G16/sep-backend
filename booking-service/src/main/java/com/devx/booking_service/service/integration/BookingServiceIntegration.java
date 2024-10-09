@@ -1,10 +1,11 @@
-package com.devx.booking_service.service;
+package com.devx.booking_service.service.integration;
 
 import com.devx.booking_service.dto.BookingDto;
 import com.devx.booking_service.exception.BookingNotFoundException;
 import com.devx.booking_service.exception.RoomNotFoundException;
 import com.devx.booking_service.exception.RoomTypeMismatchException;
 import com.devx.booking_service.exception.RoomTypeNotFoundException;
+import com.devx.booking_service.message.MessageSender;
 import com.devx.booking_service.model.Booking;
 import com.devx.booking_service.model.Room;
 import com.devx.booking_service.model.RoomType;
@@ -33,13 +34,15 @@ public class BookingServiceIntegration {
     private final BookingRepository bookingRepository;
     private final RoomTypeRepository roomTypeRepository;
     private final RoomRepository roomRepository;
+    private final MessageSender messageSender;
 
     @Autowired
-    public BookingServiceIntegration(BookingRepository bookingRepository, @Qualifier("jdbcScheduler") Scheduler jdbcScheduler, RoomRepository roomRepository, RoomTypeRepository roomTypeRepository) {
+    public BookingServiceIntegration(BookingRepository bookingRepository, @Qualifier("jdbcScheduler") Scheduler jdbcScheduler, RoomRepository roomRepository, RoomTypeRepository roomTypeRepository, MessageSender messageSender) {
         this.roomTypeRepository = roomTypeRepository;
         this.roomRepository = roomRepository;
         this.bookingRepository = bookingRepository;
         this.jdbcScheduler = jdbcScheduler;
+        this.messageSender = messageSender;
     }
 
     private RoomType findRoomType(RoomType roomType) {
@@ -73,6 +76,7 @@ public class BookingServiceIntegration {
             existingRooms.add(existingRoom);
         }
         booking.setRoomList(existingRooms);
+        messageSender.sendBookingApprovedMessage(booking);
         return bookingRepository.save(booking);
     }
 
