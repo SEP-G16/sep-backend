@@ -36,6 +36,26 @@ spec:
             configMapKeyRef:
               name: hrmis-config-map
               key: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
+        
+        - name: SPRING_RABBITMQ_HOST
+          valueFrom: 
+            configMapKeyRef:
+              name: hrmis-config-map
+              key: SPRING_RABBITMQ_HOST
+
+        - name: SPRING_RABBITMQ_USERNAME
+          valueFrom: 
+            configMapKeyRef:
+              name: hrmis-config-map
+              key: SPRING_RABBITMQ_USERNAME
+
+
+        - name: SPRING_RABBITMQ_PASSWORD
+          valueFrom: 
+            configMapKeyRef:
+              name: hrmis-config-map
+              key: SPRING_RABBITMQ_PASSWORD
+
 ---
 apiVersion: v1
 kind: Service
