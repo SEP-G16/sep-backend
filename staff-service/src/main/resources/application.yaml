@@ -26,6 +26,19 @@ spring:
     import: "optional:configserver:http://localhost:8067/"
   application:
     name: staff-service
+  datasource:
+    url: jdbc:mysql://localhost:3306/staff_db
+    username: root
+    password: venura2501
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
 
 server:
   port: 8086
@@ -50,6 +63,19 @@ spring:
     import: "optional:configserver:http://localhost:8067/"
   application:
     name: staff-service
+  datasource:
+    url: jdbc:mysql://localhost:3306/staff_db
+    username: root
+    password: venura2501
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
 
 server:
   port: 8086
