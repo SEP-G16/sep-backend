@@ -1,4 +1,4 @@
-package com.devx.booking_service.service;
+package com.devx.booking_service.service.integration;
 
 import com.devx.booking_service.dto.RoomDto;
 import com.devx.booking_service.exception.RoomTypeNotFoundException;

@@ -1,4 +1,4 @@
-package com.devx.booking_service.service;
+package com.devx.booking_service.service.integration;
 
 import com.devx.booking_service.dto.RoomTypeDto;
 import com.devx.booking_service.model.RoomType;
@@ -7,8 +7,6 @@ import com.devx.booking_service.repository.RoomCountByRoomTypeRepository;
 import com.devx.booking_service.repository.RoomTypeRepository;
 import com.devx.booking_service.utils.AppUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
