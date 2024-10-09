@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.devx</groupId>
-	<artifactId>menu-service</artifactId>
+	<artifactId>staff-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>menu-service</name>
-	<description>Microservice for Menu Service</description>
+	<name>staff-service</name>
+	<description>Microservice for Staff Service</description>
 	<url/>
 	<licenses>
 		<license/>

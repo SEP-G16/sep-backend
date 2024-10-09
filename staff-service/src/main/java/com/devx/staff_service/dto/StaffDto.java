@@ -1,15 +1,11 @@
 package com.devx.staff_service.dto;
 
 import com.devx.staff_service.enums.Gender;
-import com.devx.staff_service.model.Role;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -39,6 +35,35 @@ public class StaffDto {
         return name == null || role == null || role.isEveryFiledNull() || gender == null || dateOfBirth == null || address == null || phoneNumber == null;
     }
 
+    public String nullField()
+    {
+        if(name == null)
+        {
+            return "name";
+        }
+        if(role == null || role.isEveryFiledNull())
+        {
+            return "role";
+        }
+        if(gender == null)
+        {
+            return "gender";
+        }
+        if(dateOfBirth == null)
+        {
+            return "dateOfBirth";
+        }
+        if(address == null)
+        {
+            return "address";
+        }
+        if(phoneNumber == null)
+        {
+            return "phoneNumber";
+        }
+        else return "Data is valid";
+    }
+
     @JsonIgnore
     public boolean invalidFrom() {
         String namePattern = "^[\\p{L} .'-]+$";
@@ -51,7 +76,7 @@ public class StaffDto {
         if (phoneNumber == null || !phoneNumber.matches(phonePattern)) {
             return true;
         }
-        if(email == null || !email.matches(emailPattern)) {
+        if(email != null && !email.matches(emailPattern)) {
             return true;
         }
         return role == null || role.invalidForm();

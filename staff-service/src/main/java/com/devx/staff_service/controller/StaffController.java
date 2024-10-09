@@ -5,7 +5,6 @@ import com.devx.staff_service.exception.BadRequestException;
 import com.devx.staff_service.exception.NullFieldException;
 import com.devx.staff_service.exception.RoleNotFoundException;
 import com.devx.staff_service.exception.StaffMemberNotFoundException;
-import com.devx.staff_service.model.Staff;
 import com.devx.staff_service.service.StaffService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,7 +32,8 @@ public class StaffController {
         try{
             if(staffDto.hasNullFields())
             {
-                throw new NullFieldException("Staff fields cannot be null");
+                String nullField = staffDto.nullField();
+                throw new NullFieldException("Staff fields cannot be null : "+nullField);
             }
             if(staffDto.invalidFrom())
             {

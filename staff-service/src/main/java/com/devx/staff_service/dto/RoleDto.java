@@ -23,7 +23,7 @@ public class RoleDto {
 
     @JsonIgnore
     public boolean isEveryFiledNull() {
-        return name == null;
+        return id == null && name == null;
     }
 
     @JsonIgnore
