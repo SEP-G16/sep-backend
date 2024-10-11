@@ -56,6 +56,22 @@ spec:
               name: hrmis-config-map
               key: SPRING_RABBITMQ_PASSWORD
 
+        - name: SPRING_DATASOURCE_USERNAME
+          valueFrom: 
+            secretKeyRef:
+              name: database-creds
+              key: username
+        - name: SPRING_DATASOURCE_PASSWORD
+          valueFrom: 
+            secretKeyRef:
+              name: database-creds
+              key: password
+        - name: SPRING_DATASOURCE_URL
+          valueFrom: 
+            configMapKeyRef:
+              name: hrmis-config-map
+              key: CONTACT_SERVICE_DATASOURCE_URL
+
 ---
 apiVersion: v1
 kind: Service

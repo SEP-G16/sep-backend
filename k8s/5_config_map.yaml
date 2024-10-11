@@ -21,29 +21,31 @@ data:
   JWT_TOKEN_EXPIRATION_SECONDS: "1800"
 
   REVIEW_SERVICE_APPLICATION_NAME: review-service
-  REVIEW_SERVICE_DATASOURCE_URL: jdbc:mysql://hrmis-aiven-instance-hrmis.h.aivencloud.com:24695/review_db?ssl-mode=REQUIRED
+  REVIEW_SERVICE_DATASOURCE_URL: jdbc:mysql://35.239.61.194:3306/review_db
 
   BOOKING_SERVICE_APPLICATION_NAME: booking-service
-  BOOKING_SERVICE_DATASOURCE_URL: jdbc:mysql://hrmis-aiven-instance-hrmis.h.aivencloud.com:24695/booking_db?ssl-mode=REQUIRED
+  BOOKING_SERVICE_DATASOURCE_URL: jdbc:mysql://35.239.61.194:3306/booking_db
 
   STAFF_SERVICE_APPLICATION_NAME: staff-service
-  STAFF_SERVICE_DATASOURCE_URL: jdbc:mysql://hrmis-aiven-instance-hrmis.h.aivencloud.com:24695/staff_db?ssl-mode=REQUIRED
+  STAFF_SERVICE_DATASOURCE_URL: jdbc:mysql://35.239.61.194:3306/staff_db
 
   MENU_SERVICE_APPLICATION_NAME: menu-service
-  MENU_SERVICE_DATASOURCE_URL: jdbc:mysql://hrmis-aiven-instance-hrmis.h.aivencloud.com:24695/menu_db?ssl-mode=REQUIRED
+  MENU_SERVICE_DATASOURCE_URL: jdbc:mysql://35.239.61.194:3306/menu_db
 
   ORDER_SERVICE_APPLICATION_NAME: order-service
-  ORDER_SERVICE_DATASOURCE_URL: jdbc:mysql://hrmis-aiven-instance-hrmis.h.aivencloud.com:24695/order_db?ssl-mode=REQUIRED
+  ORDER_SERVICE_DATASOURCE_URL: jdbc:mysql://35.239.61.194:3306/order_db
 
   TABLE_RESERVATION_SERVICE_APPLICATION_NAME: table-reservation-service
-  TABLE_RESERVATION_SERVICE_DATASOURCE_URL: jdbc:mysql://hrmis-aiven-instance-hrmis.h.aivencloud.com:24695/table_reservations_db?ssl-mode=REQUIRED
+  TABLE_RESERVATION_SERVICE_DATASOURCE_URL: jdbc:mysql://35.239.61.194:3306/table_reservations_db
 
   AUTH_SERVICE_APPLICATION_NAME: auth-service
-  AUTH_SERVICE_DATASOURCE_URL: jdbc:mysql://hrmis-aiven-instance-hrmis.h.aivencloud.com:24695/auth_reservations_db?ssl-mode=REQUIRED
-
-  EMAIL_SERVICE_APPLICATION_NAME: email-service
+  AUTH_SERVICE_DATASOURCE_URL: jdbc:mysql://35.239.61.194:3306/auth_db
 
   CONTACT_SERVICE_APPLICATION_NAME: contact-service
-    
+  CONTACT_SERVICE_DATASOURCE_URL: jdbc:mysql://35.239.61.194:3306/contact_db
+
+
+  EMAIL_SERVICE_APPLICATION_NAME: email-service
+  
   API_GATEWAY_APPLICATION_NAME: api-gateway
 

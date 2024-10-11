@@ -46,6 +46,22 @@ spec:
             configMapKeyRef:
               name: hrmis-config-map
               key: JWT_TOKEN_EXPIRATION_SECONDS
+
+        - name: SPRING_DATASOURCE_USERNAME
+          valueFrom: 
+            secretKeyRef:
+              name: database-creds
+              key: username
+        - name: SPRING_DATASOURCE_PASSWORD
+          valueFrom: 
+            secretKeyRef:
+              name: database-creds
+              key: password
+        - name: SPRING_DATASOURCE_URL
+          valueFrom: 
+            configMapKeyRef:
+              name: hrmis-config-map
+              key: AUTH_SERVICE_DATASOURCE_URL
 ---
 apiVersion: v1
 kind: Service
