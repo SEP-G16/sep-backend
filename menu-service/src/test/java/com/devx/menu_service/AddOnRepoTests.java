@@ -24,29 +24,12 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @Testcontainers
 @ContextConfiguration
 @ActiveProfiles(value = "test")
-public class AddOnRepoTests {
+public class AddOnRepoTests extends BaseIntegrationTestConfiguration{
 
     @Autowired
     private AddOnRepository addOnRepository;
 
     public static final Logger LOG = LoggerFactory.getLogger(AddOnRepoTests.class);
-
-    @Container
-    static MySQLContainer mySQLContainer = new MySQLContainer("mysql:latest");
-
-    @DynamicPropertySource
-    static void configureTestProperties(DynamicPropertyRegistry registry){
-        registry.add("spring.datasource.url",() -> mySQLContainer.getJdbcUrl());
-        registry.add("spring.datasource.username",() -> mySQLContainer.getUsername());
-        registry.add("spring.datasource.password",() -> mySQLContainer.getPassword());
-        registry.add("spring.jpa.hibernate.ddl-auto",() -> "create");
-    }
-
-    @Test
-    void test()
-    {
-        Assertions.assertThat(mySQLContainer.isRunning()).isTrue();
-    }
 
     @Test
     void insertionTest()
