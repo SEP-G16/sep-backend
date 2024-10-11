@@ -1,12 +1,6 @@
 spring:
   application:
     name: ${SPRING_APPLICATION_NAME}
-  datasource:
-    url: jdbc:mysql://hrmis-aiven-instance-hrmis.h.aivencloud.com:24695/order_db?ssl-mode=REQUIRED
-    username: avnadmin
-    password: AVNS_CVMazlms80CpHegeIha
-    driver-class-name: com.mysql.cj.jdbc.Driver
-
   jpa:
     hibernate:
       ddl-auto: update
@@ -23,9 +17,14 @@ spring:
   config:
     activate:
       on-profile: dev
-    import: "optional:configserver:http://localhost:8067/"
+    import: "optional:configserver:"
   application:
     name: order-service
+  datasource:
+    url: jdbc:mysql://localhost:3306/order_db
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
 
 server:
   port: 8081
@@ -47,9 +46,14 @@ spring:
   config:
     activate:
       on-profile: dev-dis-eureka
-    import: "optional:configserver:http://localhost:8067/"
+    import: "optional:configserver:"
   application:
     name: order-service
+  datasource:
+    url: jdbc:mysql://localhost:3306/order_db
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
 
 server:
   port: 8081
@@ -57,5 +61,4 @@ server:
 eureka:
   client:
     enabled: false
-
 ---

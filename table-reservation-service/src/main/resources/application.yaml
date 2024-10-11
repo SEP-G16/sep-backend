@@ -1,12 +1,6 @@
 spring:
   application:
     name: ${SPRING_APPLICATION_NAME}
-  datasource:
-    url: jdbc:mysql://hrmis-aiven-instance-hrmis.h.aivencloud.com:24695/table_reservations_db?ssl-mode=REQUIRED
-    username: avnadmin
-    password: AVNS_CVMazlms80CpHegeIha
-    driver-class-name: com.mysql.cj.jdbc.Driver
-
   jpa:
     hibernate:
       ddl-auto: update
@@ -23,23 +17,14 @@ spring:
   config:
     activate:
       on-profile: dev
-    import: "optional:configserver:http://localhost:8067/"
+    import: "optional:configserver:"
   application:
-    name: table-reservation-service
+    name: table_reservations-service
   datasource:
     url: jdbc:mysql://localhost:3306/table_reservations_db
-    username: root
-    password: venura2501
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
-
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.MySQLDialect
-
 
 server:
   port: 8085
@@ -61,22 +46,14 @@ spring:
   config:
     activate:
       on-profile: dev-dis-eureka
-    import: "optional:configserver:http://localhost:8067/"
+    import: "optional:configserver:"
   application:
-    name: table-reservation-service
+    name: table_reservations-service
   datasource:
     url: jdbc:mysql://localhost:3306/table_reservations_db
-    username: root
-    password: venura2501
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
-
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.MySQLDialect
 
 server:
   port: 8085
