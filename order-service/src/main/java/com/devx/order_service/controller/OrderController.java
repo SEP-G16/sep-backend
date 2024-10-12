@@ -1,11 +1,9 @@
 package com.devx.order_service.controller;
 
 import com.devx.order_service.dto.OrderDto;
-import com.devx.order_service.dto.request.RejectOrderItemRequestBody;
+import com.devx.order_service.dto.request.UpdateOrderItemStatusRequestBody;
 import com.devx.order_service.exception.*;
-import com.devx.order_service.model.Order;
 import com.devx.order_service.service.OrderService;
-import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,12 +56,20 @@ public class OrderController {
         }
     }
 
-    @PostMapping("/reject-order-item/")
-    public ResponseEntity<Mono<OrderDto>> rejectOrderItem(@RequestBody RejectOrderItemRequestBody rejectOrderItemRequestBody) {
+    @PutMapping("/update-item-status/")
+    public ResponseEntity<Mono<OrderDto>> updateOrderItemStatus(@RequestBody UpdateOrderItemStatusRequestBody reqBody) {
         try {
-            return ResponseEntity.ok().body(orderService.rejectOrderItem(rejectOrderItemRequestBody));
+            if(reqBody.hasNullFields())
+            {
+                throw new NullFieldException("Order Id, Order Item Id and Order Item Status cannot be null");
+            }
+            return ResponseEntity.ok().body(orderService.updateOrderItemStatus(reqBody.getOrderId(), reqBody.getOrderItemId(), reqBody.getStatus()));
         } catch (NullFieldException | OrderNotFoundException | OrderItemNotFoundException e) {
             return ResponseEntity.badRequest().body(Mono.error(e));
+        } catch (Exception e)
+        {
+            LOG.error("Error occurred while updating order item status"+e.getMessage());
+            return ResponseEntity.internalServerError().body(Mono.error(e));
         }
     }
 
