@@ -27,7 +27,24 @@ public class OrderServiceHelperImpl implements OrderServiceHelper{
 
     @Override
     public Order findAndSetTable(Order order) {
-        RestaurantTable table = tableRepository.findById(order.getRestaurantTable().getId()).orElseThrow(() -> new TableNotFoundException("Table not found"));
+        if(order.getRestaurantTable() == null)
+        {
+            throw new NullFieldException("Table cannot be null");
+        }
+        if(order.getRestaurantTable().getId() == null && order.getRestaurantTable().getTableNo() == null)
+        {
+            throw new NullFieldException("Table ID and Table Number cannot be null");
+        }
+
+        RestaurantTable table;
+        if(order.getRestaurantTable().getId() != null)
+        {
+            table = tableRepository.findById(order.getRestaurantTable().getId()).orElseThrow(() -> new TableNotFoundException("Table not found"));
+        }
+        else
+        {
+            table = tableRepository.findByTableNo(order.getRestaurantTable().getTableNo()).orElseThrow(() -> new TableNotFoundException("Table not found"));
+        }
         order.setRestaurantTable(table);
         return order;
     }
