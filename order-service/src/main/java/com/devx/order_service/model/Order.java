@@ -53,6 +53,6 @@ public class Order {
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private LocalDateTime updatedAt;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     private RestaurantTable restaurantTable;
 }
