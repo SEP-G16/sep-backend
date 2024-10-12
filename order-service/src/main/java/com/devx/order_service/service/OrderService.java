@@ -30,13 +30,8 @@ public class OrderService {
         return orderServiceIntegration.createOrder(order);
     }
 
-    public Flux<OrderDto> getOrders() throws Exception {
-        try {
-            return orderServiceIntegration.getAllOrders();
-        } catch (Exception e) {
-            LOG.error("An unexpected error occurred while fetching temp reviews{}", e.getMessage());
-            throw new Exception(e);
-        }
+    public Flux<OrderDto> getOrders() {
+        return orderServiceIntegration.getAllOrders();
     }
 
     public Mono<Void> cancelOrder(Long orderId) {
