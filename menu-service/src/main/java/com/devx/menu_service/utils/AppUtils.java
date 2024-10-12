@@ -3,8 +3,6 @@ package com.devx.menu_service.utils;
 import com.devx.menu_service.dto.AddOnDto;
 import com.devx.menu_service.dto.CategoryDto;
 import com.devx.menu_service.dto.MenuItemDto;
-import com.devx.menu_service.dto.request.AddMenuItemRequestBody;
-import com.devx.menu_service.enums.MenuItemStatus;
 import com.devx.menu_service.model.AddOn;
 import com.devx.menu_service.model.Category;
 import com.devx.menu_service.model.MenuItem;
