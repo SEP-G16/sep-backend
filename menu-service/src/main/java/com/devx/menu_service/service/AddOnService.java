@@ -1,55 +1,30 @@
 package com.devx.menu_service.service;
 
-import com.devx.menu_service.exception.AddOnNotFoundException;
-import com.devx.menu_service.exception.BadRequestException;
-import com.devx.menu_service.exception.NullFieldException;
+import com.devx.menu_service.dto.AddOnDto;
 import com.devx.menu_service.model.AddOn;
-import com.devx.menu_service.repository.AddOnRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.devx.menu_service.service.integration.AddOnServiceIntegration;
+import com.devx.menu_service.utils.AppUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Scheduler;
 
 @Service
-public class AddOnService extends AddOnServiceHelper {
+public class AddOnService{
 
-    public static Logger LOG = LoggerFactory.getLogger(AddOnService.class);
-    private final Scheduler jdbcScheduler;
+    private final AddOnServiceIntegration addOnServiceIntegration;
 
     @Autowired
-    public AddOnService(AddOnRepository addOnRepository, @Qualifier("jdbcScheduler") Scheduler jdbcScheduler) {
-        super(addOnRepository);
-        this.jdbcScheduler = jdbcScheduler;
+    public AddOnService(AddOnServiceIntegration addOnServiceIntegration) {
+        this.addOnServiceIntegration = addOnServiceIntegration;
     }
 
-    public ResponseEntity<Mono<AddOn>> addAddOn(AddOn addOn) {
-        try {
-            AddOn savedAddOn = handleDuplicateInsert(addOn);
-            return ResponseEntity.ok(Mono.just(savedAddOn).subscribeOn(jdbcScheduler));
-
-        } catch (NullFieldException | BadRequestException e) {
-            LOG.error(e.getMessage());
-            return ResponseEntity.badRequest().body(Mono.just(new AddOn()));
-        } catch (AddOnNotFoundException e) {
-            LOG.error(e.getMessage());
-            return ResponseEntity.notFound().build();
-        }catch (Exception e) {
-            LOG.error(e.getMessage());
-            return ResponseEntity.internalServerError().body(Mono.error(e));
-        }
+    public Mono<AddOnDto> addAddOn(AddOnDto addOnDto) {
+        AddOn addOn = AppUtils.AddOnUtils.dtoToEntity(addOnDto);
+        return addOnServiceIntegration.addAddOn(addOn);
     }
 
-    public ResponseEntity<Flux<AddOn>> getAllAddOns() {
-        try {
-            return ResponseEntity.ok(Flux.fromIterable(addOnRepository.findAll()).subscribeOn(jdbcScheduler));
-        } catch (Exception e) {
-            LOG.error(e.getMessage());
-            return ResponseEntity.internalServerError().body(Flux.error(e));
-        }
+    public Flux<AddOnDto> getAllAddOns() {
+        return addOnServiceIntegration.getAllAddOns();
     }
 }
