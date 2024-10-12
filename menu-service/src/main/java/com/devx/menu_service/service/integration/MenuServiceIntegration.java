@@ -3,11 +3,10 @@ package com.devx.menu_service.service.integration;
 import com.devx.menu_service.dto.MenuItemDto;
 import com.devx.menu_service.enums.MenuItemStatus;
 import com.devx.menu_service.exception.MenuItemNotFoundException;
+import com.devx.menu_service.message.MessageSender;
 import com.devx.menu_service.model.AddOn;
 import com.devx.menu_service.model.Category;
 import com.devx.menu_service.model.MenuItem;
-import com.devx.menu_service.repository.AddOnRepository;
-import com.devx.menu_service.repository.CategoryRepository;
 import com.devx.menu_service.repository.MenuItemRepository;
 import com.devx.menu_service.service.helper.AddOnServiceHelper;
 import com.devx.menu_service.service.helper.CategoryServiceHelper;
@@ -27,13 +26,17 @@ public class MenuServiceIntegration {
     private final MenuItemRepository menuItemRepository;
     private final AddOnServiceHelper addOnServiceHelper;
     private final CategoryServiceHelper categoryServiceHelper;
+
+    private final MessageSender messageSender;
+
     private final Scheduler jdbcScheduler;
 
-    public MenuServiceIntegration(MenuItemRepository menuItemRepository, AddOnServiceHelper addOnServiceHelper, CategoryServiceHelper categoryServiceHelper, @Qualifier("jdbcScheduler") Scheduler jdbcScheduler) {
+    public MenuServiceIntegration(MenuItemRepository menuItemRepository, AddOnServiceHelper addOnServiceHelper, CategoryServiceHelper categoryServiceHelper, @Qualifier("jdbcScheduler") Scheduler jdbcScheduler, MessageSender messageSender) {
         this.menuItemRepository = menuItemRepository;
         this.addOnServiceHelper = addOnServiceHelper;
         this.categoryServiceHelper = categoryServiceHelper;
         this.jdbcScheduler = jdbcScheduler;
+        this.messageSender = messageSender;
     }
 
     private List<AddOn> getOrInsertAddOns(List<AddOn> addOns){
@@ -49,7 +52,9 @@ public class MenuServiceIntegration {
     }
 
     private MenuItem addMenuItemInternal(MenuItem menuItem){
-        return menuItemRepository.save(menuItem);
+        MenuItem saved = menuItemRepository.save(menuItem);
+        messageSender.sendAddMenuItemMessage(saved);
+        return saved;
     }
 
     public Mono<MenuItemDto> addMenuItem(MenuItem menuItem){
