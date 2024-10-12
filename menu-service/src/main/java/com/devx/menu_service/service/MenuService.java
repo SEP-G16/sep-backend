@@ -1,6 +1,8 @@
 package com.devx.menu_service.service;
 
 import com.devx.menu_service.dto.MenuItemDto;
+import com.devx.menu_service.dto.request.UpdateMenuItemStatusRequestBody;
+import com.devx.menu_service.enums.MenuItemStatus;
 import com.devx.menu_service.model.MenuItem;
 import com.devx.menu_service.service.integration.MenuServiceIntegration;
 import com.devx.menu_service.utils.AppUtils;
@@ -27,5 +29,11 @@ public class MenuService{
 
     public Flux<MenuItemDto> getAllMenuItems() {
         return menuServiceIntegration.getAllMenuItems();
+    }
+
+    public Mono<MenuItemDto> updateMenuItemStatus(UpdateMenuItemStatusRequestBody reqBody) {
+        Long id = reqBody.getId();
+        MenuItemStatus status = reqBody.getStatus();
+        return menuServiceIntegration.updateMenuItemStatus(id, status);
     }
 }
