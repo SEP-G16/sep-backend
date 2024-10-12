@@ -9,9 +9,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class OrderItemAddOnDto {
     private Long id;
+    private Long addOnId;
     private int quantity;
 
     public boolean hasNullFields() {
-        return id == null || quantity == 0;
+        return addOnId == null || quantity == 0;
     }
 }
