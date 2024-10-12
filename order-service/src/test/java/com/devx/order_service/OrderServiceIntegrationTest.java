@@ -1,14 +1,20 @@
 package com.devx.order_service;
 
-import com.devx.order_service.dto.OrderDto;
+import com.devx.order_service.dto.*;
 import com.devx.order_service.enums.OrderItemStatus;
-import com.devx.order_service.model.Order;
-import com.devx.order_service.model.OrderItem;
+import com.devx.order_service.enums.OrderStatus;
+import com.devx.order_service.model.*;
+import com.devx.order_service.repository.AddOnRepository;
+import com.devx.order_service.repository.MenuItemRepository;
 import com.devx.order_service.repository.OrderRepository;
-import com.devx.order_service.service.OrderServiceIntegration;
+import com.devx.order_service.repository.RestaurantTableRepository;
+import com.devx.order_service.service.OrderService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
 
 import java.util.List;
 import java.util.Objects;
@@ -19,228 +25,118 @@ import static org.junit.jupiter.api.Assertions.*;
 public class OrderServiceIntegrationTest extends BaseIntegrationTestConfiguration {
 
     private final OrderRepository orderRepository;
-    private final OrderServiceIntegration orderServiceIntegration;
+    private final OrderService orderService;
+
+    private final MenuItemRepository menuItemRepository;
+
+    private final AddOnRepository addOnRepository;
+
+    private final RestaurantTableRepository tableRepository;
+
+    private OrderDto testOrderDto;
 
     @Autowired
-    public OrderServiceIntegrationTest(OrderRepository orderRepository, OrderServiceIntegration orderServiceIntegration) {
+    public OrderServiceIntegrationTest(OrderRepository orderRepository, OrderService orderService, MenuItemRepository menuItemRepository, AddOnRepository addOnRepository, RestaurantTableRepository tableRepository) {
         this.orderRepository = orderRepository;
-        this.orderServiceIntegration = orderServiceIntegration;
+        this.orderService = orderService;
+        this.menuItemRepository = menuItemRepository;
+        this.addOnRepository = addOnRepository;
+        this.tableRepository = tableRepository;
+    }
+
+    @BeforeEach
+    void setup() {
+        orderRepository.deleteAll();
+        tableRepository.deleteAll();
+        menuItemRepository.deleteAll();
+        addOnRepository.deleteAll();
+
+        tableRepository.saveAll(List.of(
+                new RestaurantTable(1L, 1),
+                new RestaurantTable(2L, 2),
+                new RestaurantTable(3L, 3),
+                new RestaurantTable(4L, 4)
+        ));
+
+        menuItemRepository.save(
+                new MenuItem(1L, "Burger", List.of(new AddOn(1L, "Extra Sauce", 1.50)))
+        );
+
+        RestaurantTableDto restaurantTableDto = new RestaurantTableDto();
+        restaurantTableDto.setTableNo(1);
+
+        MenuItemDto menuItemDto = new MenuItemDto();
+        menuItemDto.setId(1L);
+
+        OrderItemAddOnDto orderItemAddOnDto = new OrderItemAddOnDto();
+        orderItemAddOnDto.setAddOnId(1L);
+        orderItemAddOnDto.setQuantity(2);
+
+        OrderItemDto orderItemDto = new OrderItemDto();
+        orderItemDto.setMenuItem(menuItemDto);
+        orderItemDto.setQuantity(2);
+        orderItemDto.setAddOns(List.of(orderItemAddOnDto));
+        orderItemDto.setAdditionalNotes("No Onions");
+
+
+        testOrderDto = new OrderDto();
+        testOrderDto.setTable(restaurantTableDto);
+        testOrderDto.setOrderItems(List.of(orderItemDto));
+        testOrderDto.setTotalAmount(10.0);
     }
 
     @Test
-    void testCreateAndCancelOrder() {
-        // Create order items
-        OrderItem orderItem1 = new OrderItem();
-        orderItem1.setQuantity(1);
-        orderItem1.setAddOns(List.of()); // Initialize addOns if needed
+    void test_AddOrder() {
 
-        OrderItem orderItem2 = new OrderItem();
-        orderItem2.setQuantity(2);
-        orderItem2.setAddOns(List.of()); // Initialize addOns if needed
+        Mono<OrderDto> orderDtoMono = orderService.createOrder(testOrderDto);
 
-        List<OrderItem> orderItems = List.of(orderItem1, orderItem2);
-
-        // Create order
-        Order order = new Order();
-        order.setOrderItems(orderItems);
-
-        // Insert the order
-        Mono<OrderDto> res1 = orderServiceIntegration.createOrder(order);
-        OrderDto savedOrder = Objects.requireNonNull(res1.block());
-
-        // Assertions for order creation
-        assertNotNull(savedOrder);
-        assertNotNull(savedOrder.getId());
-        assertEquals(2, savedOrder.getOrderItems().size());
-        assertNotNull(savedOrder.getOrderItems().get(0).getId());
-        assertNotNull(savedOrder.getOrderItems().get(1).getId());
-
-        // Verify that the order is saved in the repository
-        Optional<Order> savedOrderFromRepoOpt = orderRepository.findById(savedOrder.getId());
-        assertTrue(savedOrderFromRepoOpt.isPresent(), "Order should exist in the repository");
-
-        Order savedOrderFromRepo = savedOrderFromRepoOpt.get();
-        assertEquals(savedOrder.getId(), savedOrderFromRepo.getId(), "Order ID should match");
-
-        // Cancel the order (assuming cancelOrder method exists)
-        Mono<Void> cancelRes = orderServiceIntegration.cancelOrder(savedOrder.getId());
-        cancelRes.block();  // Block until cancellation completes
-
-        // Ensure the order is removed from the repository after cancellation
-        Optional<Order> cancelledOrderFromRepoOpt = orderRepository.findById(savedOrder.getId());
-        assertFalse(cancelledOrderFromRepoOpt.isPresent(), "Order should be removed from the repository after cancellation");
-
-        // Fetch all orders and verify the canceled order is not present
-        Mono<List<OrderDto>> allOrdersMono = orderServiceIntegration.getAllOrders().collectList();
-        List<OrderDto> allOrders = Objects.requireNonNull(allOrdersMono.block());
-
-        // Check that the canceled order does not exist in the list of orders
-        Optional<OrderDto> cancelledOrder = allOrders.stream()
-                .filter(orderDto -> orderDto.getId().equals(savedOrder.getId()))
-                .findFirst();
-
-        // Assertions for order removal
-        assertFalse(cancelledOrder.isPresent(), "Canceled order should not be present in the list of all orders");
+        StepVerifier.create(orderDtoMono)
+                .assertNext(savedOrderDto -> {
+                    assertNotNull(savedOrderDto);
+                    assertNotNull(savedOrderDto.getId());
+                    assertEquals(1, savedOrderDto.getOrderItems().size());
+                    assertEquals(1, savedOrderDto.getOrderItems().get(0).getAddOns().size());
+                    assertEquals(OrderItemStatus.Pending, savedOrderDto.getOrderItems().get(0).getStatus());
+                })
+                .verifyComplete();
     }
 
     @Test
-    void testCreateAndRejectOrderItem() {
-        // Step 1: Create order items
-        OrderItem orderItem1 = new OrderItem();
-        orderItem1.setQuantity(1);
-        orderItem1.setAddOns(List.of()); // Initialize addOns if needed
+    void test_GetAllOrderItems() {
+        Mono<OrderDto> orderDtoMono = orderService.createOrder(testOrderDto);
+        orderDtoMono.block();
 
-        OrderItem orderItem2 = new OrderItem();
-        orderItem2.setQuantity(2);
-        orderItem2.setAddOns(List.of()); // Initialize addOns if needed
-
-        List<OrderItem> orderItems = List.of(orderItem1, orderItem2);
-
-        // Step 2: Create order
-        Order order = new Order();
-        order.setOrderItems(orderItems);
-
-        // Step 3: Insert the order
-        Mono<OrderDto> res1 = orderServiceIntegration.createOrder(order);
-        OrderDto savedOrder = Objects.requireNonNull(res1.block());
-
-        // Step 4: Assertions for order creation
-        assertNotNull(savedOrder);
-        assertNotNull(savedOrder.getId());
-        assertEquals(2, savedOrder.getOrderItems().size());
-        assertNotNull(savedOrder.getOrderItems().get(0).getId());
-        assertNotNull(savedOrder.getOrderItems().get(1).getId());
-
-        // Verify that the order is saved in the repository
-        Optional<Order> savedOrderFromRepoOpt = orderRepository.findById(savedOrder.getId());
-        assertTrue(savedOrderFromRepoOpt.isPresent(), "Order should exist in the repository");
-
-        Order savedOrderFromRepo = savedOrderFromRepoOpt.get();
-        assertEquals(savedOrder.getId(), savedOrderFromRepo.getId(), "Order ID should match");
-
-        // Step 5: Reject the first order item
-        Long orderId = savedOrder.getId();
-        Long orderItemId = savedOrder.getOrderItems().get(0).getId();  // Get the ID of the first item
-
-        Mono<OrderDto> rejectRes = orderServiceIntegration.updateOrderItemStatus(orderId, orderItemId, OrderItemStatus.Rejected);
-        OrderDto updatedOrder = Objects.requireNonNull(rejectRes.block());
-
-        // Step 6: Assertions for order item rejection
-        assertNotNull(updatedOrder);
-        assertEquals(1, updatedOrder.getOrderItems().size(), "There should be only 1 item after rejection");
-        assertNotEquals(orderItemId, updatedOrder.getOrderItems().get(0).getId(), "Rejected item should not exist in the updated order");
-
-        // Verify that the rejected order item is removed from the repository
-        Optional<Order> updatedOrderFromRepoOpt = orderRepository.findById(orderId);
-        assertTrue(updatedOrderFromRepoOpt.isPresent(), "Updated order should exist in the repository");
-
-        Order updatedOrderFromRepo = updatedOrderFromRepoOpt.get();
-        assertEquals(1, updatedOrderFromRepo.getOrderItems().size(), "There should be only 1 item in the order after rejection");
-
-        // Step 7: Fetch all orders and verify that the rejected item is removed
-        Mono<List<OrderDto>> allOrdersMono = orderServiceIntegration.getAllOrders().collectList();
-        List<OrderDto> allOrders = Objects.requireNonNull(allOrdersMono.block());
-
-        Optional<OrderDto> updatedOrderInList = allOrders.stream()
-                .filter(orderDto -> orderDto.getId().equals(orderId))
-                .findFirst();
-
-        assertTrue(updatedOrderInList.isPresent(), "Updated order should be present in the list of all orders");
-        assertEquals(1, updatedOrderInList.get().getOrderItems().size(), "Rejected item should not be present in the order");
+        Flux<OrderDto> orderDtoFlux = orderService.getOrders();
+        StepVerifier.create(orderDtoFlux)
+                .assertNext(orderDto -> {
+                    assertNotNull(orderDto);
+                    assertNotNull(orderDto.getId());
+                    assertEquals(1, orderDto.getOrderItems().size());
+                    assertEquals(1, orderDto.getOrderItems().get(0).getAddOns().size());
+                    assertEquals(OrderItemStatus.Pending, orderDto.getOrderItems().get(0).getStatus());
+                })
+                .verifyComplete();
     }
 
     @Test
-    void testCreateAndGetAllOrders() {
-        // Step 1: Create three orders with items
+    void test_UpdateOrderItemStatus(){
+        Mono<OrderDto> orderDtoMono = orderService.createOrder(testOrderDto);
+        OrderDto savedOrderDto = orderDtoMono.block();
 
-        // Create first order with 2 items
-        OrderItem orderItem1A = new OrderItem();
-        orderItem1A.setQuantity(1);
-        orderItem1A.setAddOns(List.of());
+        OrderItemDto orderItemDto = savedOrderDto.getOrderItems().get(0);
+        OrderItemStatus newStatus = OrderItemStatus.Processing;
 
-        OrderItem orderItem1B = new OrderItem();
-        orderItem1B.setQuantity(2);
-        orderItem1B.setAddOns(List.of());
-
-        List<OrderItem> orderItems1 = List.of(orderItem1A, orderItem1B);
-
-        Order order1 = new Order();
-        order1.setOrderItems(orderItems1);
-
-        // Create second order with 1 item
-        OrderItem orderItem2A = new OrderItem();
-        orderItem2A.setQuantity(3);
-        orderItem2A.setAddOns(List.of());
-
-        List<OrderItem> orderItems2 = List.of(orderItem2A);
-
-        Order order2 = new Order();
-        order2.setOrderItems(orderItems2);
-
-        // Create third order with 3 items
-        OrderItem orderItem3A = new OrderItem();
-        orderItem3A.setQuantity(1);
-        orderItem3A.setAddOns(List.of());
-
-        OrderItem orderItem3B = new OrderItem();
-        orderItem3B.setQuantity(4);
-        orderItem3B.setAddOns(List.of());
-
-        OrderItem orderItem3C = new OrderItem();
-        orderItem3C.setQuantity(5);
-        orderItem3C.setAddOns(List.of());
-
-        List<OrderItem> orderItems3 = List.of(orderItem3A, orderItem3B, orderItem3C);
-
-        Order order3 = new Order();
-        order3.setOrderItems(orderItems3);
-
-        // Step 2: Save the orders using createOrder
-        Mono<OrderDto> res1 = orderServiceIntegration.createOrder(order1);
-        Mono<OrderDto> res2 = orderServiceIntegration.createOrder(order2);
-        Mono<OrderDto> res3 = orderServiceIntegration.createOrder(order3);
-
-        // Block to save orders and ensure completion
-        OrderDto savedOrder1 = Objects.requireNonNull(res1.block());
-        OrderDto savedOrder2 = Objects.requireNonNull(res2.block());
-        OrderDto savedOrder3 = Objects.requireNonNull(res3.block());
-
-        // Step 3: Assertions to ensure orders are created and saved correctly
-        assertNotNull(savedOrder1);
-        assertNotNull(savedOrder2);
-        assertNotNull(savedOrder3);
-
-        assertNotNull(savedOrder1.getId());
-        assertNotNull(savedOrder2.getId());
-        assertNotNull(savedOrder3.getId());
-
-        assertEquals(2, savedOrder1.getOrderItems().size());
-        assertEquals(1, savedOrder2.getOrderItems().size());
-        assertEquals(3, savedOrder3.getOrderItems().size());
-
-        // Step 4: Retrieve all orders using getAllOrders
-        Mono<List<OrderDto>> allOrdersMono = orderServiceIntegration.getAllOrders().collectList();
-        List<OrderDto> allOrders = Objects.requireNonNull(allOrdersMono.block());
-
-        // Step 5: Assertions to verify all three orders are fetched correctly
-        assertNotNull(allOrders);
-        assertEquals(3, allOrders.size(), "There should be 3 orders in the repository");
-
-        // Verify that the orders fetched from the repository match the created orders
-        assertTrue(allOrders.stream().anyMatch(orderDto -> orderDto.getId().equals(savedOrder1.getId())), "Order 1 should be present in the repository");
-        assertTrue(allOrders.stream().anyMatch(orderDto -> orderDto.getId().equals(savedOrder2.getId())), "Order 2 should be present in the repository");
-        assertTrue(allOrders.stream().anyMatch(orderDto -> orderDto.getId().equals(savedOrder3.getId())), "Order 3 should be present in the repository");
-
-        // Optional: Check the items for each order
-        OrderDto retrievedOrder1 = allOrders.stream().filter(orderDto -> orderDto.getId().equals(savedOrder1.getId())).findFirst().orElseThrow();
-        OrderDto retrievedOrder2 = allOrders.stream().filter(orderDto -> orderDto.getId().equals(savedOrder2.getId())).findFirst().orElseThrow();
-        OrderDto retrievedOrder3 = allOrders.stream().filter(orderDto -> orderDto.getId().equals(savedOrder3.getId())).findFirst().orElseThrow();
-
-        assertEquals(2, retrievedOrder1.getOrderItems().size(), "Order 1 should have 2 items");
-        assertEquals(1, retrievedOrder2.getOrderItems().size(), "Order 2 should have 1 item");
-        assertEquals(3, retrievedOrder3.getOrderItems().size(), "Order 3 should have 3 items");
+        Mono<OrderDto> updatedOrderDtoMono = orderService.updateOrderItemStatus(savedOrderDto.getId(), orderItemDto.getId(), newStatus);
+        StepVerifier.create(updatedOrderDtoMono)
+                .assertNext(updatedOrderDto -> {
+                    assertNotNull(updatedOrderDto);
+                    assertNotNull(updatedOrderDto.getId());
+                    assertEquals(1, updatedOrderDto.getOrderItems().size());
+                    assertEquals(1, updatedOrderDto.getOrderItems().get(0).getAddOns().size());
+                    assertEquals(newStatus, updatedOrderDto.getOrderItems().get(0).getStatus());
+                    assertEquals(OrderStatus.Processing, updatedOrderDto.getStatus());
+                })
+                .verifyComplete();
     }
-
-
 
 }
