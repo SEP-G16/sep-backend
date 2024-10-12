@@ -1,13 +1,17 @@
 package com.devx.order_service.service;
 
 import com.devx.order_service.dto.OrderDto;
+import com.devx.order_service.enums.OrderItemStatus;
+import com.devx.order_service.enums.OrderStatus;
 import com.devx.order_service.exception.OrderItemNotFoundException;
 import com.devx.order_service.exception.OrderNotFoundException;
 import com.devx.order_service.model.Order;
 import com.devx.order_service.model.OrderItem;
 import com.devx.order_service.repository.OrderRepository;
+import com.devx.order_service.service.helper.OrderServiceHelper;
 import com.devx.order_service.utils.AppUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -22,20 +26,29 @@ public class OrderServiceIntegration {
 
     private final Scheduler jdbcScheduler;
 
+    private final OrderServiceHelper orderServiceHelper;
+
     @Autowired
-    public OrderServiceIntegration(OrderRepository orderRepository, Scheduler jdbcScheduler) {
+    public OrderServiceIntegration(OrderRepository orderRepository, @Qualifier("jdbcScheduler") Scheduler jdbcScheduler, OrderServiceHelper orderServiceHelper) {
         this.orderRepository = orderRepository;
         this.jdbcScheduler = jdbcScheduler;
+        this.orderServiceHelper = orderServiceHelper;
     }
 
     private Order createOrderInternal(Order order) {
-        return orderRepository.save(order);
+        order.setStatus(OrderStatus.Pending);
+        for(OrderItem item : order.getOrderItems()) {
+            item.setStatus(OrderItemStatus.Pending);
+        }
+        Order tableSettedOrder = orderServiceHelper.findAndSetMenuItems(order);
+        Order menuItemsSettedOrder = orderServiceHelper.findAndSetTable(tableSettedOrder);
+        return orderRepository.save(menuItemsSettedOrder);
     }
 
     public Mono<OrderDto> createOrder(Order order) {
         return Mono.fromCallable(() -> {
             Order savedOrder = createOrderInternal(order);
-            return AppUtils.convertOrderToOrderDto(savedOrder);
+            return AppUtils.OrderUtils.entityToDto(savedOrder);
         }).subscribeOn(jdbcScheduler);
     }
 
@@ -46,14 +59,19 @@ public class OrderServiceIntegration {
     public Flux<OrderDto> getAllOrders() {
         return Mono.fromCallable(this::getAllOrdersInternal)
                 .flatMapMany(Flux::fromIterable)
-                .map(AppUtils::convertOrderToOrderDto)
+                .map(AppUtils.OrderUtils::entityToDto)
                 .subscribeOn(jdbcScheduler);
     }
 
     private void cancelOrderInternal(Long orderId) {
         Optional<Order> existingOrderOptional = orderRepository.findById(orderId);
         if (existingOrderOptional.isPresent()) {
-            orderRepository.deleteById(orderId);
+            Order existingOrder = existingOrderOptional.get();
+            existingOrder.setStatus(OrderStatus.Cancelled);
+            for(OrderItem item : existingOrder.getOrderItems()) {
+                item.setStatus(OrderItemStatus.Rejected);
+            }
+            orderRepository.save(existingOrder);
         } else {
             throw new OrderNotFoundException("Order " + orderId + " not found");
         }
@@ -65,16 +83,25 @@ public class OrderServiceIntegration {
 
     }
 
-    private Order rejectOrderItemInternal(Long orderId, Long orderItemId) {
+    private Order updateOrderItemStatusInternal(Long orderId, Long orderItemId, OrderItemStatus orderItemStatus)
+    {
         Optional<Order> existingOrderOptional = orderRepository.findById(orderId);
         if (existingOrderOptional.isPresent()) {
             Order existingOrder = existingOrderOptional.get();
+
             boolean itemExists = existingOrder.getOrderItems().stream().anyMatch(orderItem -> orderItem.getId().equals(orderItemId));
             if(itemExists)
             {
-                List<OrderItem> updatedOrderItems = existingOrder.getOrderItems().stream().filter(orderItem -> !orderItem.getId().equals(orderItemId)).toList();
+
+                List<OrderItem> updatedOrderItems = existingOrder.getOrderItems().stream().peek(orderItem -> {
+                    if(orderItem.getId().equals(orderItemId))
+                    {
+                        orderItem.setStatus(orderItemStatus);
+                    }
+                }).toList();
                 existingOrder.setOrderItems(updatedOrderItems);
-                return orderRepository.save(existingOrder);
+                Order statusUpdatedOrder = orderServiceHelper.handleOrderStatusChangeAfterOrderItemStatusChange(existingOrder);
+                return orderRepository.save(statusUpdatedOrder);
             }
             else{
                 throw new OrderItemNotFoundException("Order item "+orderItemId+" was not found in order "+orderId);
@@ -84,10 +111,10 @@ public class OrderServiceIntegration {
         }
     }
 
-    public Mono<OrderDto> rejectOrderItem(Long orderId, Long orderItemId) {
+    public Mono<OrderDto> updateOrderItemStatus(Long orderId, Long orderItemId, OrderItemStatus orderItemStatus) {
         return Mono.fromCallable(() -> {
-            Order updatedOrder = rejectOrderItemInternal(orderId, orderItemId);
-            return AppUtils.convertOrderToOrderDto(updatedOrder);
+            Order updatedOrder = updateOrderItemStatusInternal(orderId, orderItemId, orderItemStatus);
+            return AppUtils.OrderUtils.entityToDto(updatedOrder);
         }).subscribeOn(jdbcScheduler);
     }
 }
