@@ -18,7 +18,7 @@ public class MenuItem {
 
     private String name;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinTable(
             name = "menu_item_add_ons",
             joinColumns = @JoinColumn(name = "menu_item_id"),
