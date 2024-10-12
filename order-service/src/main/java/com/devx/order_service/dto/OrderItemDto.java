@@ -13,13 +13,13 @@ import java.util.List;
 @NoArgsConstructor
 public class OrderItemDto {
     private Long id;
-    private Long menuItemId;
+    private MenuItemDto menuItem;
     private List<OrderItemAddOnDto> addOns;
     private String additionalNotes;
-    private int quantity;
+    private Integer quantity;
     private OrderItemStatus status;
 
     public boolean hasNullFields() {
-        return menuItemId == null;
+        return menuItem == null || quantity == null;
     }
 }
