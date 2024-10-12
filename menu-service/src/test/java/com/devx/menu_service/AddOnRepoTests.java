@@ -5,25 +5,11 @@ import com.devx.menu_service.repository.AddOnRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.testcontainers.containers.MySQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
-@ExtendWith(SpringExtension.class)
-@SpringBootTest
-@Testcontainers
-@ContextConfiguration
-@ActiveProfiles(value = "test")
+
 public class AddOnRepoTests extends BaseIntegrationTestConfiguration{
 
     @Autowired
@@ -53,8 +39,6 @@ public class AddOnRepoTests extends BaseIntegrationTestConfiguration{
         Assertions.assertThat(secondSavedAddOn.getPrice()).isEqualTo(1.49);
 
         Assertions.assertThat(savedAddOn.getId()).isNotEqualTo(secondSavedAddOn.getId());
-
-        LOG.info(savedAddOn.getId().toString()+", "+secondSavedAddOn.getId().toString());
     }
 
     @AfterEach
