@@ -1,10 +1,9 @@
 package com.devx.menu_service.controller;
 
 import com.devx.menu_service.dto.MenuItemDto;
-import com.devx.menu_service.dto.request.AddMenuItemRequestBody;
+import com.devx.menu_service.dto.request.UpdateMenuItemStatusRequestBody;
 import com.devx.menu_service.exception.BadRequestException;
 import com.devx.menu_service.exception.NullFieldException;
-import com.devx.menu_service.model.MenuItem;
 import com.devx.menu_service.service.MenuService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,6 +46,21 @@ public class MenuController {
             return ResponseEntity.badRequest().body(Mono.error(e));
         } catch (Exception e) {
             LOG.error("Error occurred while adding menu item", e);
+            return ResponseEntity.internalServerError().body(Mono.error(e));
+        }
+    }
+
+    @PutMapping("/update-status")
+    public ResponseEntity<Mono<MenuItemDto>> updateStatus(@RequestBody UpdateMenuItemStatusRequestBody reqBody) {
+        try {
+            if (reqBody.getId() == null || reqBody.getStatus() == null) {
+                throw new NullFieldException("Fields of id and/or status cannot be null");
+            }
+            return ResponseEntity.ok(menuService.updateMenuItemStatus(reqBody));
+        } catch (NullFieldException | BadRequestException e) {
+            return ResponseEntity.badRequest().body(Mono.error(e));
+        } catch (Exception e) {
+            LOG.error("Error occurred while updating menu item status", e);
             return ResponseEntity.internalServerError().body(Mono.error(e));
         }
     }
