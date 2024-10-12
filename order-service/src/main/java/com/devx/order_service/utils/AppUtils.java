@@ -33,6 +33,7 @@ public class AppUtils {
             orderItemDto.setQuantity(orderItem.getQuantity());
             orderItemDto.setAdditionalNotes(orderItem.getAdditionalNotes());
             orderItemDto.setAddOns(orderItem.getAddOns().stream().map(OrderItemAddOnUtils::entityToDto).toList());
+            orderItemDto.setStatus(orderItem.getStatus());
             return orderItemDto;
         }
 
@@ -43,6 +44,7 @@ public class AppUtils {
             orderItem.setAdditionalNotes(orderItemDto.getAdditionalNotes());
             orderItem.setMenuItem(MenuItemUtils.dtoToEntity(orderItemDto.getMenuItem()));
             orderItem.setAddOns(orderItemDto.getAddOns().stream().map(OrderItemAddOnUtils::dtoToEntity).toList());
+            orderItem.setStatus(orderItemDto.getStatus());
             return orderItem;
         }
     }
@@ -113,7 +115,7 @@ public class AppUtils {
             MenuItem menuItem = new MenuItem();
             menuItem.setId(menuItemDto.getId());
             menuItem.setName(menuItemDto.getName());
-            menuItem.setAddOns((long) menuItemDto.getAddOns().size() > 0 ? menuItemDto.getAddOns().stream().map(AddOnUtils::dtoToEntity).toList() : null);
+            menuItem.setAddOns(menuItemDto.getAddOns() != null && (long) menuItemDto.getAddOns().size() > 0 ? menuItemDto.getAddOns().stream().map(AddOnUtils::dtoToEntity).toList() : null);
             return menuItem;
         }
 
