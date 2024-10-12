@@ -1,19 +1,24 @@
-package com.devx.menu_service.service;
+package com.devx.menu_service.service.helper;
 
 import com.devx.menu_service.exception.AddOnNotFoundException;
 import com.devx.menu_service.exception.BadRequestException;
 import com.devx.menu_service.exception.NullFieldException;
 import com.devx.menu_service.model.AddOn;
 import com.devx.menu_service.repository.AddOnRepository;
+import org.springframework.stereotype.Component;
 
-public class AddOnServiceHelper {
+import java.util.List;
+
+@Component
+public class AddOnServiceHelperImpl implements AddOnServiceHelper{
     protected final AddOnRepository addOnRepository;
 
-    public AddOnServiceHelper(AddOnRepository addOnRepository) {
+    public AddOnServiceHelperImpl(AddOnRepository addOnRepository) {
         this.addOnRepository = addOnRepository;
     }
 
-    protected AddOn handleDuplicateInsert(AddOn addOn) {
+    @Override
+    public AddOn addAddOn(AddOn addOn) {
         // Check if both ID and name are null
         if (addOn.getId() == null && addOn.getName() == null) {
             throw new NullFieldException("Both ID and name cannot be null for an AddOn");
@@ -39,5 +44,10 @@ public class AddOnServiceHelper {
             throw new BadRequestException("AddOn Details Mismatch");
         }
         return existingAddOn;
+    }
+
+    @Override
+    public List<AddOn> getAllAddOns() {
+        return addOnRepository.findAll();
     }
 }
