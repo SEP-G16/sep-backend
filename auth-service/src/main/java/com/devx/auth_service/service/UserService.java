@@ -1,6 +1,7 @@
 package com.devx.auth_service.service;
 
 import com.devx.auth_service.enums.Role;
+import com.devx.auth_service.exception.UserNotFoundException;
 import com.devx.auth_service.model.User;
 import com.devx.auth_service.repository.UserRepository;
 import jakarta.annotation.PostConstruct;
@@ -50,6 +51,6 @@ public class UserService implements ReactiveUserDetailsService {
     public Mono<UserDetails> findByUsername(String username) {
         return Mono.fromCallable(() -> userRepository.findByUsername(username))
                 .subscribeOn(jdbcScheduler)
-                .map(user -> user.orElseThrow(() -> new RuntimeException("User not found")));
+                .map(user -> user.orElseThrow(() -> new UserNotFoundException("User "+ username +" not found")));
     }
 }
