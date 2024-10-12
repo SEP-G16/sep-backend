@@ -37,9 +37,7 @@ public class OrderServiceIntegration {
 
     private Order createOrderInternal(Order order) {
         order.setStatus(OrderStatus.Pending);
-        for(OrderItem item : order.getOrderItems()) {
-            item.setStatus(OrderItemStatus.Pending);
-        }
+        order.setOrderItems(order.getOrderItems().stream().peek(orderItem -> orderItem.setStatus(OrderItemStatus.Pending)).toList());
         Order tableSettedOrder = orderServiceHelper.findAndSetMenuItems(order);
         Order menuItemsSettedOrder = orderServiceHelper.findAndSetTable(tableSettedOrder);
         return orderRepository.save(menuItemsSettedOrder);
