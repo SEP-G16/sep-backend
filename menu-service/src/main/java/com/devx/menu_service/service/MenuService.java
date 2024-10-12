@@ -24,6 +24,7 @@ public class MenuService{
 
     public Mono<MenuItemDto> addMenuItem(MenuItemDto menuItemDto) {
         MenuItem menuItem = AppUtils.MenuUtils.dtoToEntity(menuItemDto);
+        menuItem.setStatus(MenuItemStatus.InStock);
         return menuServiceIntegration.addMenuItem(menuItem);
     }
 
