@@ -27,7 +27,7 @@ public class MenuItem {
 
     private double price;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     private List<String> ingredients;
 
     @ManyToMany(fetch = FetchType.EAGER)
@@ -41,7 +41,7 @@ public class MenuItem {
     private String imageUrl;
     private String cuisine;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     private List<String> tags;
 
     @Enumerated(EnumType.ORDINAL)
