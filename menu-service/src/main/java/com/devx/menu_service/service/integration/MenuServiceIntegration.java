@@ -1,0 +1,70 @@
+package com.devx.menu_service.service.integration;
+
+import com.devx.menu_service.dto.MenuItemDto;
+import com.devx.menu_service.model.AddOn;
+import com.devx.menu_service.model.Category;
+import com.devx.menu_service.model.MenuItem;
+import com.devx.menu_service.repository.AddOnRepository;
+import com.devx.menu_service.repository.CategoryRepository;
+import com.devx.menu_service.repository.MenuItemRepository;
+import com.devx.menu_service.service.helper.AddOnServiceHelper;
+import com.devx.menu_service.service.helper.CategoryServiceHelper;
+import com.devx.menu_service.utils.AppUtils;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Scheduler;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Component
+public class MenuServiceIntegration {
+    private final MenuItemRepository menuItemRepository;
+    private final AddOnServiceHelper addOnServiceHelper;
+    private final CategoryServiceHelper categoryServiceHelper;
+    private final Scheduler jdbcScheduler;
+
+    public MenuServiceIntegration(MenuItemRepository menuItemRepository, AddOnServiceHelper addOnServiceHelper, CategoryServiceHelper categoryServiceHelper, @Qualifier("jdbcScheduler") Scheduler jdbcScheduler) {
+        this.menuItemRepository = menuItemRepository;
+        this.addOnServiceHelper = addOnServiceHelper;
+        this.categoryServiceHelper = categoryServiceHelper;
+        this.jdbcScheduler = jdbcScheduler;
+    }
+
+    private List<AddOn> getOrInsertAddOns(List<AddOn> addOns){
+        List<AddOn> savedAddOns = new ArrayList<>();
+        for(AddOn addOn : addOns){
+            savedAddOns.add(addOnServiceHelper.addAddOn(addOn));
+        }
+        return savedAddOns;
+    }
+
+    private Category getOrInsertCategory(Category category){
+        return categoryServiceHelper.addCategory(category);
+    }
+
+    private MenuItem addMenuItemInternal(MenuItem menuItem){
+        return menuItemRepository.save(menuItem);
+    }
+
+    public Mono<MenuItemDto> addMenuItem(MenuItem menuItem){
+        List<AddOn> savedAddOns = getOrInsertAddOns(menuItem.getAddOns());
+        Category savedCategory = getOrInsertCategory(menuItem.getCategory());
+        menuItem.setAddOns(savedAddOns);
+        menuItem.setCategory(savedCategory);
+        return Mono.fromCallable(() -> {
+            MenuItem savedMenuItem = addMenuItemInternal(menuItem);
+            return AppUtils.MenuUtils.entityToDto(savedMenuItem);
+        }).subscribeOn(jdbcScheduler);
+    }
+
+    private List<MenuItem> getAllMenuItemsInternal(){
+        return menuItemRepository.findAll();
+    }
+
+    public Flux<MenuItemDto> getAllMenuItems() {
+        return Flux.fromIterable(menuItemRepository.findAll()).map(AppUtils.MenuUtils::entityToDto).subscribeOn(jdbcScheduler);
+    }
+}
