@@ -1,6 +1,7 @@
 package com.devx.table_reservation_service.service;
 
 import com.devx.table_reservation_service.dto.RestaurantTableDto;
+import com.devx.table_reservation_service.message.MessageSender;
 import com.devx.table_reservation_service.model.RestaurantTable;
 import com.devx.table_reservation_service.repository.AvailableTablesRepository;
 import com.devx.table_reservation_service.repository.TableRepository;
@@ -23,14 +24,19 @@ public class TableServiceIntegration {
 
     private final AvailableTablesRepository availableTablesRepository;
 
-    public TableServiceIntegration(@Qualifier("jdbcScheduler") Scheduler jdbcScheduler, TableRepository tableRepository, AvailableTablesRepository availableTablesRepository) {
+    private final MessageSender messageSender;
+
+    public TableServiceIntegration(@Qualifier("jdbcScheduler") Scheduler jdbcScheduler, TableRepository tableRepository, AvailableTablesRepository availableTablesRepository, MessageSender messageSender) {
         this.jdbcScheduler = jdbcScheduler;
         this.tableRepository = tableRepository;
         this.availableTablesRepository = availableTablesRepository;
+        this.messageSender = messageSender;
     }
 
     private RestaurantTable addTableInternal(RestaurantTable table) {
-        return tableRepository.save(table);
+        RestaurantTable saved = tableRepository.save(table);
+        messageSender.sendAddRestaurantTableMessage(saved);
+        return saved;
     }
 
 
