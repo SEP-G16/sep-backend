@@ -14,13 +14,13 @@ import java.util.List;
 @Setter
 public class OrderDto {
     private Long id;
-    private Long tableId;
     private double totalAmount;
     private List<OrderItemDto> orderItems;
     private LocalDateTime orderTime;
     private OrderStatus status;
+    private RestaurantTableDto table;
 
     public boolean hasNullFields() {
-        return tableId == null || orderItems == null;
+        return orderItems == null || table.everyFieldIsNull();
     }
 }
