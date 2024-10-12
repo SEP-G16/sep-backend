@@ -15,5 +15,6 @@ public class OrderItemAddOn {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private Long addOnId;
     private int quantity;
 }
