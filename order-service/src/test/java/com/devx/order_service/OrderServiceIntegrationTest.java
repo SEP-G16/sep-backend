@@ -1,16 +1,14 @@
 package com.devx.order_service;
 
 import com.devx.order_service.dto.OrderDto;
-import com.devx.order_service.dto.request.RejectOrderItemRequestBody;
+import com.devx.order_service.enums.OrderItemStatus;
 import com.devx.order_service.model.Order;
 import com.devx.order_service.model.OrderItem;
 import com.devx.order_service.repository.OrderRepository;
-import com.devx.order_service.service.OrderService;
 import com.devx.order_service.service.OrderServiceIntegration;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import reactor.core.publisher.Mono;
-import reactor.test.StepVerifier;
 
 import java.util.List;
 import java.util.Objects;
@@ -124,8 +122,7 @@ public class OrderServiceIntegrationTest extends BaseIntegrationTestConfiguratio
         Long orderId = savedOrder.getId();
         Long orderItemId = savedOrder.getOrderItems().get(0).getId();  // Get the ID of the first item
 
-        RejectOrderItemRequestBody rejectOrderItemRequestBody = new RejectOrderItemRequestBody(orderId, orderItemId);
-        Mono<OrderDto> rejectRes = orderServiceIntegration.rejectOrderItem(orderId, orderItemId);
+        Mono<OrderDto> rejectRes = orderServiceIntegration.updateOrderItemStatus(orderId, orderItemId, OrderItemStatus.Rejected);
         OrderDto updatedOrder = Objects.requireNonNull(rejectRes.block());
 
         // Step 6: Assertions for order item rejection
