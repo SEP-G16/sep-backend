@@ -22,7 +22,9 @@ public class OrderItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long menuItemId;
+
+    @ManyToOne(cascade = CascadeType.MERGE)
+    private MenuItem menuItem;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItemAddOn> addOns;
