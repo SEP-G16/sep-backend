@@ -1,14 +1,10 @@
 package com.devx.menu_service;
 
-import com.devx.menu_service.model.AddOn;
+import com.devx.menu_service.dto.AddOnDto;
 import com.devx.menu_service.service.AddOnService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import reactor.core.publisher.Mono;
-
-import java.util.Objects;
 
 public class AddOnServiceTests extends BaseIntegrationTestConfiguration{
 
@@ -18,22 +14,19 @@ public class AddOnServiceTests extends BaseIntegrationTestConfiguration{
     @Test
     void duplicateAddOnInsertionTest()
     {
-        AddOn addOn1 = new AddOn();
+        AddOnDto addOn1 = new AddOnDto();
         addOn1.setName("Extra Sauce");
         addOn1.setPrice(1.49);
 
-        AddOn addOn2 = new AddOn();
+        AddOnDto addOn2 = new AddOnDto();
         addOn2.setName("Extra Sauce");
         addOn2.setPrice(1.49);
 
-        ResponseEntity<Mono<AddOn>> addOnRes1 = addOnService.addAddOn(addOn1);
-        ResponseEntity<Mono<AddOn>> addOnRes2 = addOnService.addAddOn(addOn2);
+        AddOnDto savedAddOnDto1 = addOnService.addAddOn(addOn1).block();
+        AddOnDto savedAddOnDto2 = addOnService.addAddOn(addOn2).block();
 
-        AddOn savedAddOn1 = Objects.requireNonNull(addOnRes1.getBody()).block();
-        AddOn savedAddOn2 = Objects.requireNonNull(addOnRes2.getBody()).block();
-
-        assert savedAddOn1 != null;
-        assert savedAddOn2 != null;
-        Assertions.assertEquals(savedAddOn1.getId(), savedAddOn2.getId());
+        assert savedAddOnDto1 != null;
+        assert savedAddOnDto2 != null;
+        Assertions.assertEquals(savedAddOnDto1.getId(), savedAddOnDto2.getId());
     }
 }
