@@ -1,6 +1,7 @@
 package com.devx.table_reservation_service.service;
 
 import com.devx.table_reservation_service.dto.RestaurantTableDto;
+import com.devx.table_reservation_service.exception.BadRequestException;
 import com.devx.table_reservation_service.message.MessageSender;
 import com.devx.table_reservation_service.model.RestaurantTable;
 import com.devx.table_reservation_service.repository.AvailableTablesRepository;
@@ -43,7 +44,7 @@ public class TableServiceIntegration {
     public Mono<RestaurantTableDto> addTable(RestaurantTable table) {
         return Mono.fromCallable(() -> {
             RestaurantTable savedTable = addTableInternal(table);
-            return AppUtils.RestaurantTableUtils.convertRestaurantTableEntityToRestaurantTableDto(savedTable);
+            return AppUtils.RestaurantTableUtils.entityToDto(savedTable);
         }).subscribeOn(jdbcScheduler);
     }
 
@@ -52,7 +53,7 @@ public class TableServiceIntegration {
     }
 
     public Flux<RestaurantTableDto> getAllTables() {
-        return Mono.fromCallable(() -> getAllTablesInternal().stream().map(AppUtils.RestaurantTableUtils::convertRestaurantTableEntityToRestaurantTableDto).toList()).flatMapMany(Flux::fromIterable).subscribeOn(jdbcScheduler);
+        return Mono.fromCallable(() -> getAllTablesInternal().stream().map(AppUtils.RestaurantTableUtils::entityToDto).toList()).flatMapMany(Flux::fromIterable).subscribeOn(jdbcScheduler);
     }
 
     private List<RestaurantTable> getAvailableTablesInternal(LocalDate selectedDate, int timeSlotStart, int timeSlotEnd) {
@@ -61,6 +62,14 @@ public class TableServiceIntegration {
     }
 
     public Flux<RestaurantTableDto> getAvailableTables(LocalDate selectedDate, int timeSlotStart, int timeSlotEnd) {
-        return Mono.fromCallable(() -> getAvailableTablesInternal(selectedDate, timeSlotStart, timeSlotEnd).stream().map(AppUtils.RestaurantTableUtils::convertRestaurantTableEntityToRestaurantTableDto).toList()).flatMapMany(Flux::fromIterable).subscribeOn(jdbcScheduler);
+        return Mono.fromCallable(() -> getAvailableTablesInternal(selectedDate, timeSlotStart, timeSlotEnd).stream().map(AppUtils.RestaurantTableUtils::entityToDto).toList()).flatMapMany(Flux::fromIterable).subscribeOn(jdbcScheduler);
+    }
+
+    private RestaurantTable getTableByIdInternal(Long id) {
+        return tableRepository.findById(id).orElseThrow(() -> new BadRequestException("Table not found"));
+    }
+
+    public Mono<RestaurantTableDto> getTableById(Long id) {
+        return Mono.fromCallable(() -> AppUtils.RestaurantTableUtils.entityToDto(getTableByIdInternal(id))).subscribeOn(jdbcScheduler);
     }
 }
