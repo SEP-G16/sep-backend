@@ -47,8 +47,8 @@ public class TableController {
         }
     }
 
-    @GetMapping("/available")
-    public ResponseEntity<Flux<RestaurantTableDto>> getAvailableTables(CheckTableAvailabilityDto dto) {
+    @PostMapping("/available")
+    public ResponseEntity<Flux<RestaurantTableDto>> getAvailableTables(@RequestBody CheckTableAvailabilityDto dto) {
         try {
             return ResponseEntity.ok().body(tableService.getAvailableTables(dto));
         } catch (NullFieldException e) {
