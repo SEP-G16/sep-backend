@@ -8,10 +8,13 @@ import com.devx.table_reservation_service.service.ReservationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.time.LocalDate;
 
 @RestController
 @RequestMapping("table/reservation")
@@ -59,6 +62,16 @@ public class ReservationController {
         } catch (Exception e) {
             LOG.error("Error occurred while cancelling reservation: ", e);
             return ResponseEntity.internalServerError().body(Mono.error(e));
+        }
+    }
+
+    @GetMapping("/by-date")
+    public ResponseEntity<Flux<ReservationDto>> getReservationsByDate(@RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+        try {
+            return ResponseEntity.ok().body(reservationService.getReservationsByDate(date));
+        } catch (Exception e) {
+            LOG.error("Error occurred while fetching reservations by date: ", e);
+            return ResponseEntity.internalServerError().body(Flux.error(new Exception(e.getMessage())));
         }
     }
 }

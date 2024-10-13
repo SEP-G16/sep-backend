@@ -11,6 +11,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,9 +47,9 @@ public class ReservationServiceIntegration {
 
     private void cancelReservationInternal(Long reservationId) {
         Optional<Reservation> existingReservationOptional = reservationRepository.findById(reservationId);
-        if(existingReservationOptional.isPresent()) {
-            reservationRepository.deleteById(reservationId);}
-        else {
+        if (existingReservationOptional.isPresent()) {
+            reservationRepository.deleteById(reservationId);
+        } else {
             throw new ReservationNotFoundException("Reservation not found");
         }
     }
@@ -56,5 +57,13 @@ public class ReservationServiceIntegration {
     public Mono<Void> cancelReservation(Long reservationId) {
         cancelReservationInternal(reservationId);
         return Mono.empty();
+    }
+
+    private List<Reservation> getReservationsByDateInternal(LocalDate date) {
+        return reservationRepository.findByReservedDate(date);
+    }
+
+    public Flux<ReservationDto> getReservationsByDate(LocalDate date) {
+        return Mono.fromCallable(() -> getReservationsByDateInternal(date).stream().map(AppUtils.ReservationUtils::entityToDto).toList()).flatMapMany(Flux::fromIterable).subscribeOn(jdbcScheduler);
     }
 }

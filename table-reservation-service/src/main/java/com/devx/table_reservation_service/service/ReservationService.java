@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.LocalDate;
+
 @Service
 public class ReservationService {
 
@@ -35,5 +37,9 @@ public class ReservationService {
 
     public Mono<Void> cancelReservation(Long reservationId) {
         return reservationServiceIntegration.cancelReservation(reservationId);
+    }
+
+    public Flux<ReservationDto> getReservationsByDate(LocalDate date) {
+        return reservationServiceIntegration.getReservationsByDate(date);
     }
 }
