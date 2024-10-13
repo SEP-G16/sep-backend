@@ -13,6 +13,6 @@ public class AddOnDto {
     private double price;
 
     public boolean hasNullFields(){
-        return id == null || name == null || price == 0;
+        return id == null;
     }
 }

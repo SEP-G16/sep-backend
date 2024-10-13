@@ -17,6 +17,6 @@ public class MenuItemDto {
 
     public boolean hasNullFields()
     {
-        return id == null || name == null || name.isEmpty() || name.isBlank() || (addOns != null && addOns.stream().anyMatch(AddOnDto::hasNullFields));
+        return id == null || (addOns != null && addOns.stream().anyMatch(AddOnDto::hasNullFields));
     }
 }

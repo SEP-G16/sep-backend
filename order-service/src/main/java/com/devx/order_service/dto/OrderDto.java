@@ -21,6 +21,6 @@ public class OrderDto {
     private RestaurantTableDto table;
 
     public boolean hasNullFields() {
-        return orderItems == null || table.everyFieldIsNull();
+        return orderItems == null || table.everyFieldIsNull() || orderItems.stream().anyMatch(OrderItemDto::hasNullFields);
     }
 }

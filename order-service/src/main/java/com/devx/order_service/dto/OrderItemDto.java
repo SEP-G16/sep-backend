@@ -20,6 +20,6 @@ public class OrderItemDto {
     private OrderItemStatus status;
 
     public boolean hasNullFields() {
-        return menuItem == null || quantity == null;
+        return menuItem == null || quantity == null || menuItem.hasNullFields() || (addOns != null && addOns.stream().anyMatch(OrderItemAddOnDto::hasNullFields));
     }
 }

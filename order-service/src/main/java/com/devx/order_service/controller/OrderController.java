@@ -27,9 +27,16 @@ public class OrderController {
     @PostMapping("/add")
     public ResponseEntity<Mono<OrderDto>> createOrder(@RequestBody OrderDto orderDto) {
         try {
+            if(orderDto.hasNullFields())
+            {
+                throw new NullFieldException("Required fields cannot be null");
+            }
             return ResponseEntity.created(null).body(orderService.createOrder(orderDto));
         } catch (NullFieldException | EmptyOrderItemListException e) {
-            return ResponseEntity.badRequest().body(Mono.error(e));
+            return ResponseEntity.badRequest().body(Mono.error(() -> new Exception(e.getMessage())));
+        } catch (Exception e) {
+            LOG.error("Error occurred while creating order"+e.getMessage());
+            return ResponseEntity.internalServerError().body(Mono.error(() -> new Exception(e.getMessage())));
         }
     }
 
