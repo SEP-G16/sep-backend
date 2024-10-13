@@ -64,4 +64,16 @@ public class MenuController {
             return ResponseEntity.internalServerError().body(Mono.error(e));
         }
     }
+
+    @PostMapping("/emit-to-order-service")
+    public ResponseEntity<Mono<Void>> emitToOrderService() {
+        try {
+            return ResponseEntity.ok(menuService.emitToOrderService());
+        } catch (NullFieldException | BadRequestException e) {
+            return ResponseEntity.badRequest().body(Mono.error(e));
+        } catch (Exception e) {
+            LOG.error("Error occurred while emitting menu item to order service", e);
+            return ResponseEntity.internalServerError().body(Mono.error(e));
+        }
+    }
 }

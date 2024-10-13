@@ -40,10 +40,10 @@ public class TableController {
         try {
             return ResponseEntity.created(null).body(tableService.addTable(restaurantTableDto));
         } catch (NullFieldException e) {
-            return ResponseEntity.badRequest().body(Mono.error(e));
+            return ResponseEntity.badRequest().body(Mono.error(new Exception(e.getMessage())));
         } catch (Exception e) {
             LOG.error("Error occurred while adding table: ", e);
-            return ResponseEntity.internalServerError().body(Mono.error(e));
+            return ResponseEntity.internalServerError().body(Mono.error(new Exception(e.getMessage())));
         }
     }
 
@@ -67,6 +67,16 @@ public class TableController {
             return ResponseEntity.badRequest().body(Mono.error(e));
         } catch (Exception e) {
             LOG.error("Error occurred while fetching table by id: ", e);
+            return ResponseEntity.internalServerError().body(Mono.error(e));
+        }
+    }
+
+    @PostMapping("/emit-to-order-service")
+    public ResponseEntity<Mono<Void>> emitToOrderService() {
+        try {
+            return ResponseEntity.ok(tableService.emitToOrderService());
+        } catch (Exception e) {
+            LOG.error("Error occurred while emitting to order service: ", e);
             return ResponseEntity.internalServerError().body(Mono.error(e));
         }
     }

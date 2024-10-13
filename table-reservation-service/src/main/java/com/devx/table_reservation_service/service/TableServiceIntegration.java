@@ -72,4 +72,13 @@ public class TableServiceIntegration {
     public Mono<RestaurantTableDto> getTableById(Long id) {
         return Mono.fromCallable(() -> AppUtils.RestaurantTableUtils.entityToDto(getTableByIdInternal(id))).subscribeOn(jdbcScheduler);
     }
+
+    private void emitToOrderServiceInternal() {
+        tableRepository.findAll().forEach(messageSender::sendAddRestaurantTableMessage);
+    }
+
+    public Mono<Void> emitToOrderService() {
+        emitToOrderServiceInternal();
+        return Mono.empty();
+    }
 }

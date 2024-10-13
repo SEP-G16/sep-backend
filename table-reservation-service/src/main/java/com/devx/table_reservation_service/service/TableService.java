@@ -45,4 +45,8 @@ public class TableService {
     public Mono<RestaurantTableDto> getTableById(Long id) {
         return tableServiceIntegration.getTableById(id);
     }
+
+    public Mono<Void> emitToOrderService() {
+        return tableServiceIntegration.emitToOrderService();
+    }
 }

@@ -73,7 +73,7 @@ public class MenuServiceIntegration {
     }
 
     public Flux<MenuItemDto> getAllMenuItems() {
-        return Flux.fromIterable(menuItemRepository.findAll()).map(AppUtils.MenuUtils::entityToDto).subscribeOn(jdbcScheduler);
+        return Flux.fromIterable(getAllMenuItemsInternal()).map(AppUtils.MenuUtils::entityToDto).subscribeOn(jdbcScheduler);
     }
 
     private MenuItem updateMenuItemStatusInternal(Long id, MenuItemStatus status) {
@@ -93,5 +93,14 @@ public class MenuServiceIntegration {
             MenuItem updatedMenuItem = updateMenuItemStatusInternal(id, status);
             return AppUtils.MenuUtils.entityToDto(updatedMenuItem);
         }).subscribeOn(jdbcScheduler);
+    }
+
+    public void emitToOrderServiceInternal() {
+        menuItemRepository.findAll().forEach(messageSender::sendAddMenuItemMessage);
+    }
+
+    public Mono<Void> emitToOrderService() {
+        emitToOrderServiceInternal();
+        return Mono.empty();
     }
 }

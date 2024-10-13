@@ -37,4 +37,8 @@ public class MenuService{
         MenuItemStatus status = reqBody.getStatus();
         return menuServiceIntegration.updateMenuItemStatus(id, status);
     }
+
+    public Mono<Void> emitToOrderService() {
+        return menuServiceIntegration.emitToOrderService();
+    }
 }
