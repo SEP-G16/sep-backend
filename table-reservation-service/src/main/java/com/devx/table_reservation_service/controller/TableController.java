@@ -59,7 +59,7 @@ public class TableController {
         }
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/by-id/{id}")
     public ResponseEntity<Mono<RestaurantTableDto>> getTableById(@PathVariable Long id) {
         try {
             return ResponseEntity.ok().body(tableService.getTableById(id));
