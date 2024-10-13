@@ -1,7 +1,6 @@
 package com.devx.table_reservation_service;
 
 import com.devx.table_reservation_service.dto.ReservationDto;
-import com.devx.table_reservation_service.dto.RestaurantTableDto;
 import com.devx.table_reservation_service.model.RestaurantTable;
 import com.devx.table_reservation_service.repository.ReservationRepository;
 import com.devx.table_reservation_service.repository.TableRepository;
@@ -17,7 +16,6 @@ import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -67,7 +65,7 @@ public class ReservationIntegrationTests extends BaseIntegrationTestConfiguratio
         testReservation1.setPeopleCount(4);
         testReservation1.setCustomerName("John Doe");
         testReservation1.setPhoneNo("0714445632");
-        testReservation1.setRestaurantTableList(List.of(AppUtils.RestaurantTableUtils.convertRestaurantTableEntityToRestaurantTableDto(tableEntity1)));
+        testReservation1.setRestaurantTableList(List.of(AppUtils.RestaurantTableUtils.entityToDto(tableEntity1)));
 
         testReservation2 = new ReservationDto();
         testReservation2.setReservedDate(LocalDate.of(2021, 5, 20));
@@ -76,7 +74,7 @@ public class ReservationIntegrationTests extends BaseIntegrationTestConfiguratio
         testReservation2.setPeopleCount(2);
         testReservation2.setCustomerName("Jane Smith");
         testReservation2.setPhoneNo("0714665632");
-        testReservation2.setRestaurantTableList(List.of(AppUtils.RestaurantTableUtils.convertRestaurantTableEntityToRestaurantTableDto(tableEntity2)));
+        testReservation2.setRestaurantTableList(List.of(AppUtils.RestaurantTableUtils.entityToDto(tableEntity2)));
 
         testReservation3 = new ReservationDto();
         testReservation3.setReservedDate(LocalDate.of(2021, 5, 20));
@@ -85,7 +83,7 @@ public class ReservationIntegrationTests extends BaseIntegrationTestConfiguratio
         testReservation3.setPeopleCount(2);
         testReservation3.setCustomerName("Tom Smith");
         testReservation3.setPhoneNo("0714995632");
-        testReservation3.setRestaurantTableList(List.of(AppUtils.RestaurantTableUtils.convertRestaurantTableEntityToRestaurantTableDto(tableEntity1), AppUtils.RestaurantTableUtils.convertRestaurantTableEntityToRestaurantTableDto(tableEntity2)));
+        testReservation3.setRestaurantTableList(List.of(AppUtils.RestaurantTableUtils.entityToDto(tableEntity1), AppUtils.RestaurantTableUtils.entityToDto(tableEntity2)));
     }
 
     @Test

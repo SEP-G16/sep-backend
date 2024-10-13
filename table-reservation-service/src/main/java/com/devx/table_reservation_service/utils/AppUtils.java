@@ -11,7 +11,7 @@ public class AppUtils {
     }
 
     public static class ReservationUtils{
-        public static ReservationDto convertReservationEntityToReservationDto(Reservation reservation) {
+        public static ReservationDto entityToDto(Reservation reservation) {
             ReservationDto reservationDto = new ReservationDto();
             reservationDto.setId(reservation.getId());
             reservationDto.setCustomerName(reservation.getCustomerName());
@@ -20,11 +20,11 @@ public class AppUtils {
             reservationDto.setPhoneNo(reservation.getPhoneNo());
             reservationDto.setTimeSlotStart(reservation.getTimeSlotStart());
             reservationDto.setTimeSlotEnd(reservation.getTimeSlotEnd());
-            reservationDto.setRestaurantTableList(reservation.getRestaurantTableList().stream().map(RestaurantTableUtils::convertRestaurantTableEntityToRestaurantTableDto).toList());
+            reservationDto.setRestaurantTableList(reservation.getRestaurantTableList().stream().map(RestaurantTableUtils::entityToDto).toList());
             return reservationDto;
         }
 
-        public static Reservation convertReservationDtoToReservationEntity(ReservationDto reservationDto) {
+        public static Reservation dtoToEntity(ReservationDto reservationDto) {
             if(reservationDto.hasNullFields())
             {
                 throw new NullFieldException("ReservationDto has null fields");
@@ -42,7 +42,7 @@ public class AppUtils {
                 {
                     throw new NullFieldException("RestaurantTableDto has null fields");
                 }
-                return RestaurantTableUtils.convertRestaurantTableDtoToRestaurantTableEntity(tableDto);
+                return RestaurantTableUtils.dtoToEntity(tableDto);
             }).toList());
             return reservation;
         }
@@ -50,7 +50,7 @@ public class AppUtils {
 
 
     public static class RestaurantTableUtils{
-        public static RestaurantTableDto convertRestaurantTableEntityToRestaurantTableDto(RestaurantTable restaurantTable) {
+        public static RestaurantTableDto entityToDto(RestaurantTable restaurantTable) {
             RestaurantTableDto restaurantTableDto = new RestaurantTableDto();
             restaurantTableDto.setId(restaurantTable.getId());
             restaurantTableDto.setTableNo(restaurantTable.getTableNo());
@@ -58,7 +58,7 @@ public class AppUtils {
             return restaurantTableDto;
         }
 
-        public static RestaurantTable convertRestaurantTableDtoToRestaurantTableEntity(RestaurantTableDto restaurantTableDto) {
+        public static RestaurantTable dtoToEntity(RestaurantTableDto restaurantTableDto) {
             if(restaurantTableDto.hasNullFields())
             {
                 throw new NullFieldException("RestaurantTableDto has null fields");

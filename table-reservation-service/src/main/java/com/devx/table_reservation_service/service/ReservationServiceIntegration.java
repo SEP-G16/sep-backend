@@ -32,7 +32,7 @@ public class ReservationServiceIntegration {
     public Mono<ReservationDto> addReservation(Reservation reservation) {
         return Mono.fromCallable(() -> {
             Reservation savedReservation = addReservationInternal(reservation);
-            return AppUtils.ReservationUtils.convertReservationEntityToReservationDto(savedReservation);
+            return AppUtils.ReservationUtils.entityToDto(savedReservation);
         }).subscribeOn(jdbcScheduler);
     }
 
@@ -41,7 +41,7 @@ public class ReservationServiceIntegration {
     }
 
     public Flux<ReservationDto> getAllReservations() {
-        return Mono.fromCallable(() -> getAllReservationsInternal().stream().map(AppUtils.ReservationUtils::convertReservationEntityToReservationDto).toList()).flatMapMany(Flux::fromIterable).subscribeOn(jdbcScheduler);
+        return Mono.fromCallable(() -> getAllReservationsInternal().stream().map(AppUtils.ReservationUtils::entityToDto).toList()).flatMapMany(Flux::fromIterable).subscribeOn(jdbcScheduler);
     }
 
     private void cancelReservationInternal(Long reservationId) {
