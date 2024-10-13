@@ -12,6 +12,7 @@ public class AppUtils {
     public static class OrderItemAddOnUtils{
         public static OrderItemAddOnDto entityToDto(OrderItemAddOn addOn) {
             OrderItemAddOnDto addOnDto = new OrderItemAddOnDto();
+            addOnDto.setAddOnId(addOn.getAddOnId());
             addOnDto.setId(addOn.getId());
             addOnDto.setQuantity(addOn.getQuantity());
             return addOnDto;
@@ -20,6 +21,7 @@ public class AppUtils {
         public static OrderItemAddOn dtoToEntity(OrderItemAddOnDto addOnDto) {
             OrderItemAddOn addOn = new OrderItemAddOn();
             addOn.setId(addOnDto.getId());
+            addOn.setAddOnId(addOnDto.getAddOnId());
             addOn.setQuantity(addOnDto.getQuantity());
             return addOn;
         }
