@@ -26,7 +26,7 @@ public class AvailableTablesRepository {
     @Autowired
     public AvailableTablesRepository(DataSource dataSource) {
         this.availableTablesProcCall = new SimpleJdbcCall(dataSource)
-                .withProcedureName("Get_Available_Room_Count");
+                .withProcedureName("Get_Available_Tables");
     }
 
     // Method to call the stored procedure and get available room counts
