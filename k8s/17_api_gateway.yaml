@@ -54,7 +54,6 @@ metadata:
 spec:
   selector:
     app: api-gateway
-  type: LoadBalancer
   ports:
     - protocol: TCP
       port: 80
