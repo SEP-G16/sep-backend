@@ -32,7 +32,16 @@ public class MessageReceiver {
     }
 
     @RabbitListener(queues = "#{addTableQueue.name}")
-    public void addTabledMessageHandler(RestaurantTableDto restaurantTableDto) throws MessagingException {
+    public void addTableMessageHandler(RestaurantTableDto restaurantTableDto) throws MessagingException {
+        try{
+            restaurantTableMessageParser.addTable(restaurantTableDto);
+        } catch (Exception e) {
+            LOG.error("Error occurred while adding table: ", e);
+        }
+    }
+
+    @RabbitListener(queues = "#{updateMenuItemStatusQueue.name}")
+    public void updateMenuItemStatusMessageHandler(RestaurantTableDto restaurantTableDto) throws MessagingException {
         try{
             restaurantTableMessageParser.addTable(restaurantTableDto);
         } catch (Exception e) {

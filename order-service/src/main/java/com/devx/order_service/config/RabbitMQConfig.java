@@ -45,6 +45,19 @@ public class RabbitMQConfig {
         }
 
         @Bean
+        public Queue updateMenuItemStatusQueue() {
+            return new AnonymousQueue();
+        }
+
+        @Bean
+        public Binding updateMenuItemStatusBinding(DirectExchange direct,
+                                       Queue updateMenuItemStatusQueue) {
+            return BindingBuilder.bind(updateMenuItemStatusQueue)
+                    .to(direct)
+                    .with("updateMenuItemStatus");
+        }
+
+        @Bean
         public MessageReceiver receiver() {
             return new MessageReceiver();
         }
