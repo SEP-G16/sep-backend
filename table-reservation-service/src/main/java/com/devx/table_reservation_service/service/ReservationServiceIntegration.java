@@ -3,7 +3,9 @@ package com.devx.table_reservation_service.service;
 import com.devx.table_reservation_service.dto.ReservationDto;
 import com.devx.table_reservation_service.exception.ReservationNotFoundException;
 import com.devx.table_reservation_service.model.Reservation;
+import com.devx.table_reservation_service.model.RestaurantTable;
 import com.devx.table_reservation_service.repository.ReservationRepository;
+import com.devx.table_reservation_service.service.helper.ReservationServiceHelper;
 import com.devx.table_reservation_service.utils.AppUtils;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -12,6 +14,7 @@ import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,13 +23,26 @@ public class ReservationServiceIntegration {
 
     private final ReservationRepository reservationRepository;
     private final Scheduler jdbcScheduler;
+    private final ReservationServiceHelper reservationServiceHelper;
 
-    public ReservationServiceIntegration(ReservationRepository reservationRepository, @Qualifier("jdbcScheduler") Scheduler jdbcScheduler) {
+    public ReservationServiceIntegration(ReservationRepository reservationRepository, @Qualifier("jdbcScheduler") Scheduler jdbcScheduler, ReservationServiceHelper reservationServiceHelper) {
         this.reservationRepository = reservationRepository;
         this.jdbcScheduler = jdbcScheduler;
+        this.reservationServiceHelper = reservationServiceHelper;
+    }
+
+    private List<RestaurantTable> addTables(List<RestaurantTable> tables)
+    {
+        List<RestaurantTable> saved = new ArrayList<>();
+        for(RestaurantTable table: tables)
+        {
+            saved.add(reservationServiceHelper.addTable(table));
+        }
+        return saved;
     }
 
     private Reservation addReservationInternal(Reservation reservation) {
+        reservation.setRestaurantTableList(addTables(reservation.getRestaurantTableList()));
         return reservationRepository.save(reservation);
     }
 
