@@ -20,6 +20,7 @@ import org.springframework.web.cors.reactive.CorsWebFilter;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 @EnableWebFluxSecurity
@@ -70,7 +71,7 @@ class SecurityConfig {
         corsConfig.addAllowedMethod("PATCH");
         corsConfig.addAllowedMethod("POST");
         corsConfig.addAllowedMethod("OPTIONS");
-        corsConfig.setAllowedOriginPatterns(Arrays.asList("http://localhost:[*]"));
+        corsConfig.setAllowedOriginPatterns(List.of("http://localhost:[*]"));
         corsConfig.setAllowedHeaders(Arrays.asList("Origin", "Content-Type", "Accept", "Authorization", "User-Key", "Request-Tracker", "Session-Tracker", "X-XSRF-TOKEN", "X-IBM-CLIENT-ID", "Message-ID", "X-IBM-CLIENT-SECRET"));
         corsConfig.setExposedHeaders(Arrays.asList("X-Get-Header"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
