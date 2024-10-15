@@ -3,8 +3,7 @@ package com.devx.order_service.service;
 import com.devx.order_service.dto.OrderDto;
 import com.devx.order_service.enums.OrderItemStatus;
 import com.devx.order_service.enums.OrderStatus;
-import com.devx.order_service.exception.OrderItemNotFoundException;
-import com.devx.order_service.exception.OrderNotFoundException;
+import com.devx.order_service.exception.*;
 import com.devx.order_service.message.MessageSender;
 import com.devx.order_service.model.Order;
 import com.devx.order_service.model.OrderItem;
@@ -118,6 +117,39 @@ public class OrderServiceIntegration {
         return Mono.fromCallable(() -> {
             Order updatedOrder = updateOrderItemStatusInternal(orderId, orderItemId, orderItemStatus);
             return AppUtils.OrderUtils.entityToDto(updatedOrder);
+        }).subscribeOn(jdbcScheduler);
+    }
+
+    private Order completeOrderInternal(Long orderId) {
+        Optional<Order> existingOrderOptional = orderRepository.findById(orderId);
+        if (existingOrderOptional.isPresent()) {
+            Order existingOrder = existingOrderOptional.get();
+            if(existingOrder.getStatus().equals(OrderStatus.Pending_Payment))
+            {
+                existingOrder.setStatus(OrderStatus.Complete);
+                return orderRepository.save(existingOrder);
+            }
+            else if(existingOrder.getStatus().equals(OrderStatus.Complete))
+            {
+                throw new OrderAlreadyCompletedException("Order "+orderId+" is already completed");
+            }
+            else if(existingOrder.getStatus().equals(OrderStatus.Cancelled))
+            {
+                throw new OrderAlreadyCancelledException("Order "+orderId+" is already cancelled");
+            }
+            else
+            {
+                throw new OrderNotYetCompleteException("Order "+orderId+" is not yet complete");
+            }
+        } else {
+            throw new OrderNotFoundException("Order " + orderId + " not found");
+        }
+    }
+
+    public Mono<OrderDto> completeOrder(Long orderId) {
+        return Mono.fromCallable(() -> {
+            Order completedOrder = completeOrderInternal(orderId);
+            return AppUtils.OrderUtils.entityToDto(completedOrder);
         }).subscribeOn(jdbcScheduler);
     }
 }

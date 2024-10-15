@@ -1,5 +1,5 @@
 package com.devx.order_service.enums;
 
 public enum OrderStatus {
-    Pending, Processing, Complete, Cancelled
+    Pending, Processing, Complete, Cancelled, Pending_Payment
 }

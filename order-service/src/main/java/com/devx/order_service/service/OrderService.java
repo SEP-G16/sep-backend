@@ -41,4 +41,8 @@ public class OrderService {
     public Mono<OrderDto> updateOrderItemStatus(Long orderId, Long orderItemId, OrderItemStatus orderItemStatus) {
         return orderServiceIntegration.updateOrderItemStatus(orderId, orderItemId, orderItemStatus);
     }
+
+    public Mono<OrderDto> completeOrder(Long orderId) {
+        return orderServiceIntegration.completeOrder(orderId);
+    }
 }

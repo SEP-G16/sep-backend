@@ -80,4 +80,21 @@ public class OrderController {
         }
     }
 
+    @PutMapping("/complete-order/{orderId}")
+    public ResponseEntity<Mono<OrderDto>> completeOrder(@PathVariable Long orderId) {
+        try {
+            if(orderId == null)
+            {
+                throw new BadRequestException("Order Id cannot be null");
+            }
+            return ResponseEntity.ok().body(orderService.completeOrder(orderId));
+        } catch (OrderNotFoundException | OrderAlreadyCompletedException | OrderNotYetCompleteException e) {
+            return ResponseEntity.badRequest().body(Mono.error(new Exception(e.getMessage())));
+        } catch (Exception e)
+        {
+            LOG.error("Error occurred while completing order"+e.getMessage());
+            return ResponseEntity.internalServerError().body(Mono.error(new Exception(e.getMessage())));
+        }
+    }
+
 }

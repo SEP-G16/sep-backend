@@ -6,11 +6,14 @@ import com.devx.order_service.exception.BadRequestException;
 import com.devx.order_service.exception.NullFieldException;
 import com.devx.order_service.exception.TableNotFoundException;
 import com.devx.order_service.model.Order;
+import com.devx.order_service.model.OrderItem;
 import com.devx.order_service.model.RestaurantTable;
 import com.devx.order_service.repository.MenuItemRepository;
 import com.devx.order_service.repository.RestaurantTableRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 public class OrderServiceHelperImpl implements OrderServiceHelper{
@@ -52,32 +55,27 @@ public class OrderServiceHelperImpl implements OrderServiceHelper{
     @Override
     public Order handleOrderStatusChangeAfterOrderItemStatusChange(Order order)
     {
-        boolean allItemsCompleted = order.getOrderItems().stream().allMatch(orderItem -> orderItem.getStatus().equals(OrderItemStatus.Complete));
-        if(allItemsCompleted)
+        List<OrderItem> orderItems = order.getOrderItems();
+        assert orderItems != null;
+        boolean noPendingAndNoProcessingOrderItemsExists = orderItems.stream().noneMatch(orderItem -> orderItem.getStatus().equals(OrderItemStatus.Pending) || orderItem.getStatus().equals(OrderItemStatus.Processing));
+        boolean anyOrderItemIsProcessing = orderItems.stream().anyMatch(orderItem -> orderItem.getStatus().equals(OrderItemStatus.Processing));
+        if(noPendingAndNoProcessingOrderItemsExists)
         {
-            order.setStatus(OrderStatus.Complete);
+            boolean allOrderItemsAreRejected = orderItems.stream().allMatch(orderItem -> orderItem.getStatus().equals(OrderItemStatus.Rejected));
+            if(allOrderItemsAreRejected)
+            {
+                order.setStatus(OrderStatus.Cancelled);
+            }
+            else
+            {
+                order.setStatus(OrderStatus.Pending_Payment);
+            }
         }
-
-        boolean allItemsRejected = order.getOrderItems().stream().allMatch(orderItem -> orderItem.getStatus().equals(OrderItemStatus.Rejected));
-        if(allItemsRejected)
-        {
-            order.setStatus(OrderStatus.Cancelled);
-        }
-
-        boolean allItemsPending = order.getOrderItems().stream().allMatch(orderItem -> orderItem.getStatus().equals(OrderItemStatus.Pending));
-        if(allItemsPending)
-        {
-            order.setStatus(OrderStatus.Pending);
-        }
-
-        boolean atLeastOneIsProcessing = order.getOrderItems().stream().anyMatch(orderItem -> orderItem.getStatus().equals(OrderItemStatus.Processing));
-        if(atLeastOneIsProcessing)
+        else if(anyOrderItemIsProcessing)
         {
             order.setStatus(OrderStatus.Processing);
         }
-
-        boolean nonIsProcessingOrComplete = order.getOrderItems().stream().noneMatch(orderItem -> orderItem.getStatus().equals(OrderItemStatus.Processing) || orderItem.getStatus().equals(OrderItemStatus.Complete));
-        if(nonIsProcessingOrComplete)
+        else
         {
             order.setStatus(OrderStatus.Pending);
         }
