@@ -12,7 +12,7 @@ metadata:
     nginx.ingress.kubernetes.io/enable-cors: "true"
     nginx.ingress.kubernetes.io/cors-allow-origin: "*"
     nginx.ingress.kubernetes.io/cors-allow-methods: "GET, POST, PUT, DELETE, PATCH, OPTIONS"
-    nginx.ingress.kubernetes.io/cors-allow-headers: "Authorization, Content-Type, Accept"
+    nginx.ingress.kubernetes.io/cors-allow-headers: "Origin, Content-Type, Accept, Authorization, User-Key, Request-Tracker, Session-Tracker, X-XSRF-TOKEN, X-IBM-CLIENT-ID, Message-ID, X-IBM-CLIENT-SECRET"
 spec:
   ingressClassName: nginx
   rules:
