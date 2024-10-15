@@ -26,4 +26,8 @@ public class MessageSender {
         OrderDto orderDto = AppUtils.OrderUtils.entityToDto(order);
         template.convertAndSend(direct.getName(), "sendOrderStatusUpdate", orderDto);
     }
+
+    public void sendOrderAddedMessage() {
+        template.convertAndSend(direct.getName(), "sendOrderAdded", "");
+    }
 }

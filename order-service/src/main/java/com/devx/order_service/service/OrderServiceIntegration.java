@@ -43,7 +43,9 @@ public class OrderServiceIntegration {
         order.setOrderItems(order.getOrderItems().stream().peek(orderItem -> orderItem.setStatus(OrderItemStatus.Pending)).toList());
         Order tableSettedOrder = orderServiceHelper.findAndSetMenuItems(order);
         Order menuItemsSettedOrder = orderServiceHelper.findAndSetTable(tableSettedOrder);
-        return orderRepository.save(menuItemsSettedOrder);
+        Order saved =  orderRepository.save(menuItemsSettedOrder);
+        messageSender.sendOrderAddedMessage();
+        return saved;
     }
 
     public Mono<OrderDto> createOrder(Order order) {
