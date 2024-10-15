@@ -5,6 +5,7 @@ import com.devx.order_service.enums.OrderItemStatus;
 import com.devx.order_service.enums.OrderStatus;
 import com.devx.order_service.exception.OrderItemNotFoundException;
 import com.devx.order_service.exception.OrderNotFoundException;
+import com.devx.order_service.message.MessageSender;
 import com.devx.order_service.model.Order;
 import com.devx.order_service.model.OrderItem;
 import com.devx.order_service.repository.OrderRepository;
@@ -28,11 +29,14 @@ public class OrderServiceIntegration {
 
     private final OrderServiceHelper orderServiceHelper;
 
+    private final MessageSender messageSender;
+
     @Autowired
-    public OrderServiceIntegration(OrderRepository orderRepository, @Qualifier("jdbcScheduler") Scheduler jdbcScheduler, OrderServiceHelper orderServiceHelper) {
+    public OrderServiceIntegration(OrderRepository orderRepository, @Qualifier("jdbcScheduler") Scheduler jdbcScheduler, OrderServiceHelper orderServiceHelper, MessageSender messageSender) {
         this.orderRepository = orderRepository;
         this.jdbcScheduler = jdbcScheduler;
         this.orderServiceHelper = orderServiceHelper;
+        this.messageSender = messageSender;
     }
 
     private Order createOrderInternal(Order order) {
@@ -99,6 +103,7 @@ public class OrderServiceIntegration {
                 }).toList();
                 existingOrder.setOrderItems(updatedOrderItems);
                 Order statusUpdatedOrder = orderServiceHelper.handleOrderStatusChangeAfterOrderItemStatusChange(existingOrder);
+                messageSender.sendOrderStatusUpdateMessage(statusUpdatedOrder);
                 return orderRepository.save(statusUpdatedOrder);
             }
             else{
