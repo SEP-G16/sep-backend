@@ -72,7 +72,7 @@ class SecurityConfig {
         corsConfig.addAllowedMethod("PATCH");
         corsConfig.addAllowedMethod("POST");
         corsConfig.addAllowedMethod("OPTIONS");
-        corsConfig.setAllowedOriginPatterns(List.of("http://localhost:[*]"));
+        corsConfig.setAllowedOriginPatterns(List.of("*"));
         corsConfig.setAllowedHeaders(Arrays.asList("Origin", "Content-Type", "Accept", "Authorization", "User-Key", "Request-Tracker", "Session-Tracker", "X-XSRF-TOKEN", "X-IBM-CLIENT-ID", "Message-ID", "X-IBM-CLIENT-SECRET"));
         corsConfig.setExposedHeaders(Arrays.asList("X-Get-Header"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
