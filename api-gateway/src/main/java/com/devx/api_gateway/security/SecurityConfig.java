@@ -68,11 +68,11 @@ class SecurityConfig {
         corsConfig.applyPermitDefaultValues();
         corsConfig.setAllowCredentials(true);
         corsConfig.addAllowedMethod("GET");
-        corsConfig.addAllowedMethod("PUT");
         corsConfig.addAllowedMethod("PATCH");
         corsConfig.addAllowedMethod("POST");
+        corsConfig.addAllowedMethod("PUT");
         corsConfig.addAllowedMethod("OPTIONS");
-        corsConfig.setAllowedOriginPatterns(List.of("*"));
+        corsConfig.setAllowedOrigins(List.of("http://localhost:3000"));
         corsConfig.setAllowedHeaders(Arrays.asList("Origin", "Content-Type", "Accept", "Authorization", "User-Key", "Request-Tracker", "Session-Tracker", "X-XSRF-TOKEN", "X-IBM-CLIENT-ID", "Message-ID", "X-IBM-CLIENT-SECRET"));
         corsConfig.setExposedHeaders(Arrays.asList("X-Get-Header"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
