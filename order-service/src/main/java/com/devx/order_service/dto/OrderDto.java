@@ -15,7 +15,6 @@ import java.util.UUID;
 @Setter
 public class OrderDto {
     private Long id;
-    private double totalAmount;
     private List<OrderItemDto> orderItems;
     private LocalDateTime orderTime;
     private OrderStatus status;
