@@ -41,6 +41,7 @@ class SecurityConfig {
                         .matchers(ServerWebExchangeMatchers.pathMatchers("/api/booking/temp/add")).permitAll()
                         .matchers(ServerWebExchangeMatchers.pathMatchers("/api/menu/all")).permitAll()
                         .matchers(ServerWebExchangeMatchers.pathMatchers("/api/order/add")).permitAll()
+                        .matchers(ServerWebExchangeMatchers.pathMatchers("/api/order/incomplete/**")).permitAll()
                         .matchers(ServerWebExchangeMatchers.pathMatchers("/api/room-type/available-count")).permitAll()
                         .matchers(ServerWebExchangeMatchers.pathMatchers("/api/contact-us/support-ticket/add")).permitAll()
                         .matchers(ServerWebExchangeMatchers.pathMatchers("/api/table/by-id/**")).permitAll()

@@ -33,19 +33,40 @@ public class UserService implements ReactiveUserDetailsService {
 
     @PostConstruct
     public void init() {
-        User user = new User();
-        user.setUsername("alex@example.com");
-        user.setPassword(passwordEncoder.encode("alex1234"));
-        user.setEnabled(true);
-        user.setRoles(List.of(Role.ROLE_HOTEL_MANAGER));
-        userRepository.save(user);
-
         User admin = new User();
         admin.setUsername("admin@example.com");
-        admin.setPassword(passwordEncoder.encode("Admin000#"));
+        admin.setPassword(passwordEncoder.encode("admin1234"));
         admin.setEnabled(true);
         admin.setRoles(List.of(Role.ROLE_ADMIN));
         userRepository.save(admin);
+
+        User hotelManager = new User();
+        hotelManager.setUsername("alex@example.com");
+        hotelManager.setPassword(passwordEncoder.encode("alex1234"));
+        hotelManager.setEnabled(true);
+        hotelManager.setRoles(List.of(Role.ROLE_HOTEL_MANAGER));
+        userRepository.save(hotelManager);
+
+        User restaurantManager = new User();
+        restaurantManager.setUsername("restaurant@example.com");
+        restaurantManager.setPassword(passwordEncoder.encode("restaurant1234"));
+        restaurantManager.setEnabled(true);
+        restaurantManager.setRoles(List.of(Role.ROLE_RESTAURANT_MANAGER));
+        userRepository.save(restaurantManager);
+
+        User chef = new User();
+        chef.setUsername("chef@example.com");
+        chef.setPassword(passwordEncoder.encode("chef1234"));
+        chef.setEnabled(true);
+        chef.setRoles(List.of(Role.ROLE_CHEF));
+        userRepository.save(chef);
+
+        User frontDesk = new User();
+        frontDesk.setUsername("frontdesk@example.com");
+        frontDesk.setPassword(passwordEncoder.encode("frontdesk1234"));
+        frontDesk.setEnabled(true);
+        frontDesk.setRoles(List.of(Role.ROLE_FRONT_DESK));
+        userRepository.save(frontDesk);
     }
 
     public Mono<UserDetails> findByUsername(String username) {

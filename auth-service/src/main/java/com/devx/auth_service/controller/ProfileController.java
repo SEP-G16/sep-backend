@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ProfileController {
 
-    @PreAuthorize("hasAnyRole('HOTEL_MANAGER','USER')")
+    @PreAuthorize("hasAnyRole('ADMIN','RESTAURANT_MANAGER','ADMIN','CHEF','FRONT_DESK','HOTEL_MANAGER','USER')")
     @GetMapping("/auth/profile")
     Mono<ProfileResponse> getProfile(Authentication authentication) {
         User user = (User) authentication.getPrincipal();
