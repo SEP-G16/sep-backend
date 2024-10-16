@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/order")
 public class OrderController {
@@ -94,6 +96,25 @@ public class OrderController {
         {
             LOG.error("Error occurred while completing order"+e.getMessage());
             return ResponseEntity.internalServerError().body(Mono.error(new Exception(e.getMessage())));
+        }
+    }
+
+    @GetMapping("/incomplete/{sessionId}")
+    public ResponseEntity<Flux<OrderDto>> getIncompleteOrders(@PathVariable String sessionId) {
+        try {
+            if(sessionId == null)
+            {
+                throw new BadRequestException("Session Id cannot be null");
+            }
+
+            UUID uuid = UUID.fromString(sessionId);
+            return ResponseEntity.ok().body(orderService.getIncompleteOrders(uuid));
+        } catch (BadRequestException e) {
+            return ResponseEntity.badRequest().body(Flux.error(e));
+        } catch (Exception e)
+        {
+            LOG.error("Error occurred while fetching incomplete orders"+e.getMessage());
+            return ResponseEntity.internalServerError().body(Flux.error(e));
         }
     }
 

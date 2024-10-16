@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.UUID;
+
 @Service
 public class OrderService {
 
@@ -44,5 +46,9 @@ public class OrderService {
 
     public Mono<OrderDto> completeOrder(Long orderId) {
         return orderServiceIntegration.completeOrder(orderId);
+    }
+
+    public Flux<OrderDto> getIncompleteOrders(UUID uuid) {
+        return orderServiceIntegration.getIncompleteOrders(uuid);
     }
 }

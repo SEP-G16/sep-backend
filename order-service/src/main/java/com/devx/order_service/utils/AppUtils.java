@@ -5,6 +5,8 @@ import com.devx.order_service.exception.EmptyOrderItemListException;
 import com.devx.order_service.exception.NullFieldException;
 import com.devx.order_service.model.*;
 
+import java.util.UUID;
+
 public class AppUtils {
     private AppUtils() {
     }
@@ -36,6 +38,7 @@ public class AppUtils {
             orderItemDto.setAdditionalNotes(orderItem.getAdditionalNotes());
             orderItemDto.setAddOns(orderItem.getAddOns().stream().map(OrderItemAddOnUtils::entityToDto).toList());
             orderItemDto.setStatus(orderItem.getStatus());
+            orderItemDto.setTotalAmount(orderItem.getTotalAmount());
             return orderItemDto;
         }
 
@@ -47,6 +50,7 @@ public class AppUtils {
             orderItem.setMenuItem(MenuItemUtils.dtoToEntity(orderItemDto.getMenuItem()));
             orderItem.setAddOns(orderItemDto.getAddOns().stream().map(OrderItemAddOnUtils::dtoToEntity).toList());
             orderItem.setStatus(orderItemDto.getStatus());
+            orderItem.setTotalAmount(orderItemDto.getTotalAmount());
             return orderItem;
         }
     }
@@ -71,22 +75,22 @@ public class AppUtils {
         public static OrderDto entityToDto(Order order) {
             OrderDto orderDto = new OrderDto();
             orderDto.setId(order.getId());
-            orderDto.setTotalAmount(order.getTotalAmount());
             orderDto.setOrderItems(order.getOrderItems().stream().map(OrderItemUtils::entityToDto).toList());
             orderDto.setOrderTime(order.getOrderTime());
             orderDto.setStatus(order.getStatus());
             orderDto.setTable(TableUtils.entityToDto(order.getRestaurantTable()));
+            orderDto.setSessionId(order.getSessionId().toString());
             return orderDto;
         }
 
         public static Order dtoToEntity(OrderDto orderDto) {
             Order order = new Order();
             order.setId(orderDto.getId());
-            order.setTotalAmount(orderDto.getTotalAmount());
             order.setOrderItems(orderDto.getOrderItems().stream().map(OrderItemUtils::dtoToEntity).toList());
             order.setOrderTime(orderDto.getOrderTime());
             order.setStatus(orderDto.getStatus());
             order.setRestaurantTable(TableUtils.dtoToEntity(orderDto.getTable()));
+            order.setSessionId(orderDto.getSessionId() != null ? UUID.fromString(orderDto.getSessionId()) : null);
             return order;
         }
     }

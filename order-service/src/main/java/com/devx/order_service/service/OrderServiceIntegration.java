@@ -19,6 +19,7 @@ import reactor.core.scheduler.Scheduler;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Component
 public class OrderServiceIntegration {
@@ -153,5 +154,13 @@ public class OrderServiceIntegration {
             Order completedOrder = completeOrderInternal(orderId);
             return AppUtils.OrderUtils.entityToDto(completedOrder);
         }).subscribeOn(jdbcScheduler);
+    }
+
+    private List<Order> getIncompleteOrdersInternal(UUID uuid) {
+        return orderRepository.findBySessionId(uuid);
+    }
+
+    public Flux<OrderDto> getIncompleteOrders(UUID uuid) {
+
     }
 }

@@ -6,6 +6,7 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Data
 @AllArgsConstructor
@@ -19,6 +20,7 @@ public class OrderDto {
     private LocalDateTime orderTime;
     private OrderStatus status;
     private RestaurantTableDto table;
+    private String sessionId;
 
     public boolean hasNullFields() {
         return orderItems == null || table.everyFieldIsNull() || orderItems.stream().anyMatch(OrderItemDto::hasNullFields);

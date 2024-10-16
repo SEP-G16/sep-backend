@@ -43,4 +43,6 @@ public class OrderItem {
     @UpdateTimestamp
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private LocalDateTime updatedAt;
+
+    private double totalAmount;
 }

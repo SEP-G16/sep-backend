@@ -18,6 +18,7 @@ public class OrderItemDto {
     private String additionalNotes;
     private Integer quantity;
     private OrderItemStatus status;
+    private double totalAmount;
 
     public boolean hasNullFields() {
         return menuItem == null || quantity == null || menuItem.hasNullFields() || (addOns != null && addOns.stream().anyMatch(OrderItemAddOnDto::hasNullFields));
