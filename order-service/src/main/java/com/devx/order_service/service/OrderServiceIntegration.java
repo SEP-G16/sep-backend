@@ -161,6 +161,9 @@ public class OrderServiceIntegration {
     }
 
     public Flux<OrderDto> getIncompleteOrders(UUID uuid) {
-
+        return Mono.fromCallable(() -> getIncompleteOrdersInternal(uuid))
+                .flatMapMany(Flux::fromIterable)
+                .map(AppUtils.OrderUtils::entityToDto)
+                .subscribeOn(jdbcScheduler);
     }
 }
