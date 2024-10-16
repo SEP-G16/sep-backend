@@ -16,7 +16,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: "https://ceylonresort.live"
+  - host: "ceylonresort.live"
     http:
       paths:
       - path: /api(/|$)(.*)
