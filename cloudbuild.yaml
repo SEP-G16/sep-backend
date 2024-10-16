@@ -167,18 +167,18 @@ steps:
   
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-# - name: 'gcr.io/cloud-builders/mvn'
-#   dir: 'api-gateway'
-#   args: ['package', '-DskipTests']
-#   id: 'Package API Gateway'
+- name: 'gcr.io/cloud-builders/mvn'
+  dir: 'api-gateway'
+  args: ['package', '-DskipTests']
+  id: 'Package API Gateway'
 
-# - name: 'gcr.io/cloud-builders/docker'
-#   args: ['build', '-t', 'us-central1-docker.pkg.dev/stone-album-437618-f8/hrmis-artifact-registry/api-gateway', './api-gateway' ]
-#   id: 'Build API Gateway Docker Image'
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'us-central1-docker.pkg.dev/stone-album-437618-f8/hrmis-artifact-registry/api-gateway', './api-gateway' ]
+  id: 'Build API Gateway Docker Image'
 
-# - name: 'gcr.io/cloud-builders/docker'
-#   args: ['push', 'us-central1-docker.pkg.dev/stone-album-437618-f8/hrmis-artifact-registry/api-gateway' ]
-#   id: 'Push API Gateway Docker Image'
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'us-central1-docker.pkg.dev/stone-album-437618-f8/hrmis-artifact-registry/api-gateway' ]
+  id: 'Push API Gateway Docker Image'
   
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
