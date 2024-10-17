@@ -65,7 +65,7 @@ public class OrderController {
         }
     }
 
-    @PutMapping("/update-item-status/")
+    @PutMapping("/update-item-status")
     public ResponseEntity<Mono<OrderDto>> updateOrderItemStatus(@RequestBody UpdateOrderItemStatusRequestBody reqBody) {
         try {
             if(reqBody.hasNullFields())

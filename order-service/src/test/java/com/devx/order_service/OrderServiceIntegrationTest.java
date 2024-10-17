@@ -82,7 +82,6 @@ public class OrderServiceIntegrationTest extends BaseIntegrationTestConfiguratio
         testOrderDto = new OrderDto();
         testOrderDto.setTable(restaurantTableDto);
         testOrderDto.setOrderItems(List.of(orderItemDto));
-        testOrderDto.setTotalAmount(10.0);
     }
 
     @Test

@@ -3,6 +3,14 @@ spring:
     name: test-order-service
   config:
     import: "optional:configserver:http://localhost:8888/"
+
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driverClassName: org.h2.Driver
+    username: sa
+    password: password
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
 eureka:
   client:
     enabled: false
