@@ -17,7 +17,7 @@ import reactor.core.publisher.Mono;
 import java.time.LocalDate;
 
 @RestController
-@RequestMapping("table/reservation")
+@RequestMapping("/table/reservation")
 public class ReservationController {
     private final ReservationService reservationService;
 
