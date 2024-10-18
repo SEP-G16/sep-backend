@@ -2,7 +2,9 @@ package com.devx.order_service.message;
 
 import com.devx.order_service.dto.MenuItemDto;
 import com.devx.order_service.dto.RestaurantTableDto;
+import com.devx.order_service.dto.message.UpdateMenuItemStatusMessageBody;
 import com.devx.order_service.message.parser.MenuItemMessageParser;
+import com.devx.order_service.message.parser.OrderMessageParser;
 import com.devx.order_service.message.parser.RestaurantTableMessageParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +23,9 @@ public class MessageReceiver {
 
     @Autowired
     private RestaurantTableMessageParser restaurantTableMessageParser;
+
+    @Autowired
+    private OrderMessageParser orderMessageParser;
 
     @RabbitListener(queues = "#{addMenuItemQueue.name}")
     public void addMenuItemMessageHandler(MenuItemDto menuItemDto) throws MessagingException {
@@ -41,9 +46,9 @@ public class MessageReceiver {
     }
 
     @RabbitListener(queues = "#{updateMenuItemStatusQueue.name}")
-    public void updateMenuItemStatusMessageHandler(RestaurantTableDto restaurantTableDto) throws MessagingException {
+    public void updateMenuItemStatusMessageHandler(UpdateMenuItemStatusMessageBody msg) throws MessagingException {
         try{
-            restaurantTableMessageParser.addTable(restaurantTableDto);
+            orderMessageParser.updateOrdersByMenuItemStatus(msg.getId(), msg.getStatus());
         } catch (Exception e) {
             LOG.error("Error occurred while adding table: ", e);
         }
