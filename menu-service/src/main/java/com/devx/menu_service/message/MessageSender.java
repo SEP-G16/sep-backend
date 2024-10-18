@@ -49,6 +49,10 @@ public class MessageSender {
         msg.setId(id);
         msg.setStatus(status);
         template.convertAndSend(wsDirect.getName(), "updateMenuItemStatus", msg);
+        if(status == MenuItemStatus.OutOfStock)
+        {
+            template.convertAndSend(orderDirect.getName(), "updateMenuItemStatus", msg);
+        }
     }
 
 
