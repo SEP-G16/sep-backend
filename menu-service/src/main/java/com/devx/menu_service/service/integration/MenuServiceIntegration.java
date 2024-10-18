@@ -81,7 +81,9 @@ public class MenuServiceIntegration {
         if(existingMenuItem.isPresent()){
             MenuItem menuItem = existingMenuItem.get();
             menuItem.setStatus(status);
-            return menuItemRepository.save(menuItem);
+            MenuItem saved = menuItemRepository.save(menuItem);
+            messageSender.sendMenuItemStatusChangeMessage(id, status);
+            return saved;
         }
         else {
             throw new MenuItemNotFoundException("Menu item with id " + id + " not found");
