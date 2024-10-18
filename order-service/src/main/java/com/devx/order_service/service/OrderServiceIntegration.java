@@ -130,7 +130,9 @@ public class OrderServiceIntegration {
             if(existingOrder.getStatus().equals(OrderStatus.Pending_Payment))
             {
                 existingOrder.setStatus(OrderStatus.Complete);
-                return orderRepository.save(existingOrder);
+                Order saved = orderRepository.save(existingOrder);
+                messageSender.sendOrderStatusUpdateMessage(saved);
+                return saved;
             }
             else if(existingOrder.getStatus().equals(OrderStatus.Complete))
             {
