@@ -43,6 +43,7 @@ public class ReservationServiceIntegration {
 
     private Reservation addReservationInternal(Reservation reservation) {
         reservation.setRestaurantTableList(addTables(reservation.getRestaurantTableList()));
+        System.out.println("Adding reservation: " + reservation);
         return reservationRepository.save(reservation);
     }
 

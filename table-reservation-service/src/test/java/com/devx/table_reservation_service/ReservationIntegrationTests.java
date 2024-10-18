@@ -45,17 +45,20 @@ public class ReservationIntegrationTests extends BaseIntegrationTestConfiguratio
         tableRepository.deleteAll();
 
         RestaurantTable table1 = new RestaurantTable();
-        table1.setId(1L);
+//        table1.setId(1L);
         table1.setTableNo(1);
         table1.setChairCount(4);
 
         RestaurantTable table2 = new RestaurantTable();
-        table2.setId(2L);
+//        table2.setId(2L);
         table2.setTableNo(2);
         table2.setChairCount(2);
 
-        tableEntity1 = tableRepository.save(table1);
-        tableEntity2 = tableRepository.save(table2);
+//        tableEntity1 = tableRepository.save(table1);
+//        tableEntity2 = tableRepository.save(table2);
+
+        tableEntity1 = table1;
+        tableEntity2 = table2;
 
         // Initialize test data
         testReservation1 = new ReservationDto();
@@ -91,6 +94,7 @@ public class ReservationIntegrationTests extends BaseIntegrationTestConfiguratio
         // Add reservations using ReservationService
         Mono<ReservationDto> reservationPublisher1 = reservationService.addReservation(testReservation1);
         Mono<ReservationDto> reservationPublisher2 = reservationService.addReservation(testReservation2);
+        Mono<ReservationDto> reservationPublisher3 = reservationService.addReservation(testReservation3);
 
         // Verify that reservations are saved and have IDs assigned
         StepVerifier.create(reservationPublisher1).assertNext(reservation -> {
@@ -111,6 +115,17 @@ public class ReservationIntegrationTests extends BaseIntegrationTestConfiguratio
             assertThat(reservation.getPeopleCount()).isEqualTo(testReservation2.getPeopleCount());
             assertThat(reservation.getCustomerName()).isEqualTo(testReservation2.getCustomerName());
             assertThat(reservation.getPhoneNo()).isEqualTo(testReservation2.getPhoneNo());
+        }).verifyComplete();
+
+        StepVerifier.create(reservationPublisher3).assertNext(reservation -> {
+            assertThat(reservation.getId()).isNotNull();
+            assertThat(reservation.getReservedDate()).isEqualTo(testReservation3.getReservedDate());
+            assertThat(reservation.getTimeSlotStart()).isEqualTo(testReservation3.getTimeSlotStart());
+            assertThat(reservation.getTimeSlotEnd()).isEqualTo(testReservation3.getTimeSlotEnd());
+            assertThat(reservation.getPeopleCount()).isEqualTo(testReservation3.getPeopleCount());
+            assertThat(reservation.getCustomerName()).isEqualTo(testReservation3.getCustomerName());
+            assertThat(reservation.getPhoneNo()).isEqualTo(testReservation3.getPhoneNo());
+            assertThat(reservation.getRestaurantTableList().size()).isEqualTo(2);
         }).verifyComplete();
     }
 

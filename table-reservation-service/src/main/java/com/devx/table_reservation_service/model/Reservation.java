@@ -27,6 +27,6 @@ public class Reservation {
     private Integer timeSlotStart;
     private Integer timeSlotEnd;
 
-    @OneToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     private List<RestaurantTable> restaurantTableList;
 }
