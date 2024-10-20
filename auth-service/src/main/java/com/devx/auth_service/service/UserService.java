@@ -34,35 +34,35 @@ public class UserService implements ReactiveUserDetailsService {
     @PostConstruct
     public void init() {
         User admin = new User();
-        admin.setUsername("admin@example.com");
+        admin.setUsername("admin@ceylonr.com");
         admin.setPassword(passwordEncoder.encode("admin1234"));
         admin.setEnabled(true);
         admin.setRoles(List.of(Role.ROLE_ADMIN));
         userRepository.save(admin);
 
         User hotelManager = new User();
-        hotelManager.setUsername("alex@example.com");
+        hotelManager.setUsername("hotelmgr@ceylonr.com");
         hotelManager.setPassword(passwordEncoder.encode("alex1234"));
         hotelManager.setEnabled(true);
         hotelManager.setRoles(List.of(Role.ROLE_HOTEL_MANAGER));
         userRepository.save(hotelManager);
 
         User restaurantManager = new User();
-        restaurantManager.setUsername("restaurant@example.com");
+        restaurantManager.setUsername("restaurantmgr@ceylonr.com");
         restaurantManager.setPassword(passwordEncoder.encode("restaurant1234"));
         restaurantManager.setEnabled(true);
         restaurantManager.setRoles(List.of(Role.ROLE_RESTAURANT_MANAGER));
         userRepository.save(restaurantManager);
 
         User chef = new User();
-        chef.setUsername("chef@example.com");
+        chef.setUsername("chef@ceylonr.com");
         chef.setPassword(passwordEncoder.encode("chef1234"));
         chef.setEnabled(true);
         chef.setRoles(List.of(Role.ROLE_CHEF));
         userRepository.save(chef);
 
         User frontDesk = new User();
-        frontDesk.setUsername("frontdesk@example.com");
+        frontDesk.setUsername("frontdesk@ceylonr.com");
         frontDesk.setPassword(passwordEncoder.encode("frontdesk1234"));
         frontDesk.setEnabled(true);
         frontDesk.setRoles(List.of(Role.ROLE_FRONT_DESK));
